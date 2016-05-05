@@ -1,0 +1,62 @@
+<html lang="en">
+	<head>
+		<script>
+			var auth2;
+			var googleUser;
+			var profile;
+			
+			function appStart(){
+				console.log("appStart");
+				gapi.load('auth2', initSigninV2);
+			};
+
+			
+			function initSigninV2(){
+				//gapi.client.setApiKey(apiKey);
+				console.log("initSigninV2");
+				
+				auth2 = gapi.auth2.init({
+					client_id: "877919083410-kmf5737t33qkkrlo33ljlnho5ovl7r76.apps.googleusercontent.com",
+					scope: "profile",
+					fetch_basic_profile: true
+				});
+
+				if (auth2.isSignedIn.get()) {
+						console.log("signed in.");
+					}else{
+						console.log("not signed in");
+					}
+				
+				auth2.signIn().then(function() {
+    				googleUser = auth2.currentUser.get();
+	    				
+    				if (auth2.isSignedIn.get()) {
+						console.log("signed in.");
+					}else{
+						console.log("not signed in");
+					}
+
+					//console.log(googleUser);
+					var loginMail = googleUser.getBasicProfile().getEmail();
+					document.getElementById('demo').innerHTML = "Current login account: " + loginMail + " Not you?";
+
+  				},function(){
+  					console.log("log in failed.");
+  				});
+			}
+		</script>
+
+		<script src="https://apis.google.com/js/client.js?onload=appStart"></script>
+	</head>
+	
+	<body>
+
+	<div id='demo'></div>
+	<div class="g-signin2" data-onsuccess="onSignIn"></div>
+	<!--<button id="authorize-button" onclick="appStart(event)">
+        Authorize
+      </button> !-->
+
+	<!--<button type='button' onclick='appStart(event)'>Log in</button> !-->
+	</body>
+</html>
