@@ -17,7 +17,6 @@
 
 					auth2 = gapi.auth2.init(params);
 					
-					
 					auth2.signIn().then(function() {
 	    				googleUser = auth2.currentUser.get();
 		    				
@@ -42,7 +41,7 @@
 			function onSuccess(user){
 				console.log("onSuccess");
 				document.getElementById('name').innerText = "Signed in: " +
-			            googleUser.getBasicProfile().getEmail();
+			            user.getBasicProfile().getEmail();
 			};
 
 			function onFailure(error){
@@ -73,10 +72,6 @@
 	<div id='name'></div>
 
 	<div id="customBtn"></div>
-	<!--<button id="authorize-button" onclick="appStart(event)">
-        Authorize
-      </button> !-->
-
-	<!--<button type='button' onclick='appStart(event)'>Log in</button> !-->
+	
 	</body>
 </html>
