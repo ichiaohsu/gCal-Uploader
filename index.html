@@ -9,7 +9,8 @@
 			var params = {
 				client_id: "877919083410-kmf5737t33qkkrlo33ljlnho5ovl7r76.apps.googleusercontent.com",
 				scope: "profile https://www.googleapis.com/auth/userinfo.email ",
-				fetch_basic_profile: true
+				fetch_basic_profile: true,
+				prompt: "none"
 			};
 
 			function appStart(){
@@ -34,7 +35,6 @@
 			  				}, onFailure 
 		  				);	
 		  			}
-					
 					attachSignin(document.getElementById('signinBtn'));
 				});		
 			}
