@@ -30,11 +30,16 @@
 						console.log("Not yet sign in");
 						
 						auth2.signIn().then(function() {
+
+							console.log(googleUser);
+			    			
 			    			googleUser = auth2.currentUser.get();
+			    			console.log(googleUser);
 							onSuccess(googleUser);
 			  				}, onFailure 
 		  				);	
 		  			}
+		  			console.log(googleUser);
 					attachSignin(document.getElementById('signinBtn'));
 				});		
 			}
@@ -46,6 +51,15 @@
 			    /* Use prompt to let user choose whether to login another account
 			    ** Should modify later
 			    */
+
+			    console.log(googleUser);
+			    /*
+			    if (googleUser.hasGrantedScopes('email https://www.googleapis.com/auth/calendar')){
+			    	console.log("granted");
+			    }else{
+			    	console.log("not granted");
+			    }
+				*/
 			    auth2.attachClickHandler(element, {
 					client_id: "877919083410-kmf5737t33qkkrlo33ljlnho5ovl7r76.apps.googleusercontent.com",
 					scope: "profile",
