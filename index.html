@@ -3,57 +3,184 @@
 		<script>
 			var auth2;
 			var googleUser;
-			var profile;
+			//var profile;
+			var cauthuser;
 			
 			var params = {
 				client_id: "877919083410-kmf5737t33qkkrlo33ljlnho5ovl7r76.apps.googleusercontent.com",
-				scope: "profile",
+				scope: "profile https://www.googleapis.com/auth/userinfo.email ",
 				fetch_basic_profile: true
 			};
 
 			function appStart(){
 				console.log("appStart");
+				
 				gapi.load('auth2', function(){
 
+					// Start Signing in procedure
 					auth2 = gapi.auth2.init(params);
 					
-					auth2.signIn().then(function() {
-	    				googleUser = auth2.currentUser.get();
-		    				
-	    				if (auth2.isSignedIn.get()) {
-							console.log("signed in.");
-						}else{
-							console.log("not signed in");
-						}
+					auth2.isSignedIn.listen(signinChanged);
+	  				auth2.currentUser.listen(userChanged);
 
-						onSuccess(googleUser);
+					if (auth2.isSignedIn.get() == true){
+						console.log("already sign in");
+					}else{
+						console.log("Not yet sign in");
+						
+						auth2.signIn().then(function() {
+			    			googleUser = auth2.currentUser.get();
+							onSuccess(googleUser);
+			  				}, onFailure 
+		  				);	
+		  			}
+					
+					attachSignin(document.getElementById('signinBtn'));
+				});		
+			}
 
-	  				}, onFailure );
-	  				attachSignin(document.getElementById('customBtn'));
-				});
-			};
-
+			// Reaction when press sign in button
 			function attachSignin(element) {
 			    console.log(element.id);
-			    auth2.attachClickHandler(element, params, onSuccess, onFailure);
+
+			    /* Use prompt to let user choose whether to login another account
+			    ** Should modify later
+			    */
+			    auth2.attachClickHandler(element, {
+					client_id: "877919083410-kmf5737t33qkkrlo33ljlnho5ovl7r76.apps.googleusercontent.com",
+					scope: "profile",
+					fetch_basic_profile: true,
+					prompt: "select_account consent"
+				}, onSuccess, onFailure);
+			}
+
+			function userChanged(user){
+
+				if (auth2.isSignedIn.get() == true){
+					console.log("now user: " + user.getBasicProfile().getEmail());
+					document.getElementById('name').innerText = "Signed in: " +
+			            user.getBasicProfile().getEmail();
+				}
+				googleUser = user;
+			}
+
+			function signinChanged(val){
+				console.log("sign in state change to: " + val);
+				if (!val){
+					document.getElementById('signoutBtn').style.display = "none";
+					document.getElementById('name').style.display = "none";
+				}else{
+					document.getElementById('signoutBtn').style.display = "inline-block";
+					document.getElementById('name').style.display = "block";
+				}
 			}
 
 			function onSuccess(user){
 				console.log("onSuccess");
-				document.getElementById('name').innerText = "Signed in: " +
-			            user.getBasicProfile().getEmail();
-			};
+				
+				// Change cauthuser for usage in checkAuth
+				cauthuser = parseInt(user.hg.session_state.extraQueryParams.authuser);
+				console.log(cauthuser);
+			}
 
 			function onFailure(error){
 				console.log("onFailure");
 				alert(JSON.stringify( error,undefined,2) );
-			};
+			}
 
+			function signOut(){
+				
+				auth2 = gapi.auth2.getAuthInstance();
+				auth2.disconnect();
+				console.log("authorized scopes:" + auth2.currentUser.get().getGrantedScopes());
+				auth2.signOut().then( function(){console.log("User signed out!")},
+				function(){console.log("signed out error")} );
+			}
+
+			function authResultHandle(result){
+
+				console.log("authResultHandle");
+				console.log(result);
+				if (!result || result.error || !googleUser.hasGrantedScopes('email https://www.googleapis.com/auth/calendar') ){
+				// Fail case
+					console.log("result false");
+					
+					var options = new gapi.auth2.SigninOptionsBuilder(
+			        {'scope': 'email https://www.googleapis.com/auth/calendar',
+			    	 'prompt': 'select_account consent'});
+
+					googleUser = auth2.currentUser.get();
+					googleUser.grant(options).then(
+			    	
+			    	function(success){
+			     		console.log(JSON.stringify({message: "success", value: success}));
+			    	},
+			    	function(fail){
+			      		alert(JSON.stringify({message: "fail", value: fail}));
+					});
+				}else{
+					console.log("result true");
+					loadCalendarApi();
+				}
+			}
+
+			function checkAuth() {
+				console.log("checkAuth");
+				gapi.auth.authorize({
+					client_id: "877919083410-kmf5737t33qkkrlo33ljlnho5ovl7r76.apps.googleusercontent.com",
+					scope: "email https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/userinfo.email",
+					immediate: true,
+					authuser: cauthuser}, authResultHandle);
+			}
+
+
+			function loadCalendarApi(){
+				console.log("loadCalendarApi");
+				gapi.client.load('calendar', 'v3', updateEvent);
+			}
+
+			function updateEvent(){
+				console.log("updateEvent");
+				var request = gapi.client.calendar.events.list({
+          'calendarId': 'primary',
+          'timeMin': (new Date()).toISOString(),
+          'showDeleted': false,
+          'singleEvents': true,
+          'maxResults': 10,
+          'orderBy': 'startTime'
+        });
+
+        request.execute(function(resp) {
+          var events = resp.items;
+          appendPre('Upcoming events:');
+
+          if (events.length > 0) {
+            for (i = 0; i < events.length; i++) {
+              var event = events[i];
+              var when = event.start.dateTime;
+              if (!when) {
+                when = event.start.date;
+              }
+              appendPre(event.summary + ' (' + when + ')')
+            }
+          } else {
+            appendPre('No upcoming events found.');
+          }
+
+        });
+		}
+
+		function appendPre(message) {
+        var pre = document.getElementById('output');
+        var textContent = document.createTextNode(message + '\n');
+        pre.appendChild(textContent);
+      }
 		</script>
+
 		<script src="https://apis.google.com/js/client.js?onload=appStart"></script>
 
 		<style type="text/css">
-	    #customBtn {
+	    #signinBtn {
 	      display: inline-block;
 	      background: white;
 	      color: #444;
@@ -64,6 +191,18 @@
 	      box-shadow: 1px 1px 1px grey;
 	      white-space: nowrap;
 	    }
+
+	    #signoutBtn{
+	    	display: inline-block;
+	    	background: white;
+	    	color: #222;
+	    	width: 100px;
+	    	height:30px;
+	    	border-radius: 5px;
+	      	border: thin solid #888;
+	      	box-shadow: 1px 1px 1px grey;
+	      	white-space: nowrap;
+	    }
 	    </style>
 	</head>
 	
@@ -71,7 +210,18 @@
 
 	<div id='name'></div>
 
-	<div id="customBtn"></div>
-	
+	<div id="signinBtn">
+		<span class="buttonText">Google</span>
+	</div>
+
+	<div id="signoutBtn" onclick="signOut()">
+		<span class="buttonText">Sign out</span>
+	</div>
+
+	<button id="show" onclick='checkAuth()'>show</button>
+	<pre id="output"></pre>
+
+	<div id="cuser"></div>
+	<!-- <a href="#" onclick="signOut();">Sign out</a> !-->
 	</body>
 </html>
