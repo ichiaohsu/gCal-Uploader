@@ -34,6 +34,9 @@
 				'isMemberSet': false,
 				'defaultMember': ['BS','IU','JO','JP','LY','MY','SQ','WI']
 			};
+
+			
+			//document.getElementById("monthSelect").selectedIndex = "2";
 			/*
 			var newevent = {
 			  'summary': 'Google I/O 2015',
@@ -363,7 +366,7 @@
 	    	text-align: center;
 	    }
 	    .selector-container{
-	    	width:50px;
+	    	width: 65px;
 	    }
 	    </style>
 	</head>
@@ -387,12 +390,19 @@
 	
 	<label for="month">Select a month :</label>
 	<div class="selector-container">
-		<select class="form-control" id="member">
+		<select class="form-control" id="month">
 			<option value="Jan">Jan</option>
 			<option value="Feb">Feb</option>
 			<option value="Mar">Mar</option>
 			<option value="Apr">Apr</option>
 			<option value="May">May</option>
+			<option value="Jun">Jun</option>
+			<option value="Jul">Jul</option>
+			<option value="Aug">Aug</option>
+			<option value="Sep">Sep</option>
+			<option value="Oct">Oct</option>
+			<option value="Nov">Nov</option>
+			<option value="Dec">Dec</option>
 		</select>
 	</div>
 	
@@ -408,5 +418,9 @@
 	</div>	
 			
 	<button id="show" onclick='checkAuth()'>show</button>
+	<script>
+		var nowdate = new Date();
+		document.getElementById("month").selectedIndex = nowdate.getMonth() + 1;
+	</script>
 	</body>
 </html>
