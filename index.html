@@ -34,9 +34,6 @@
 				'isMemberSet': false,
 				'defaultMember': ['BS','IU','JO','JP','LY','MY','SQ','WI']
 			};
-
-			
-			//document.getElementById("monthSelect").selectedIndex = "2";
 			/*
 			var newevent = {
 			  'summary': 'Google I/O 2015',
@@ -81,6 +78,9 @@
 				} else {
   					alert('The File APIs are not fully supported in this browser.');
 				}
+
+				var nowdate = new Date();
+				document.getElementById("month").selectedIndex = nowdate.getMonth() + 1;
 
 				gapi.load('auth2', function(){
 
@@ -302,7 +302,9 @@
 			      			desiredData.member = desiredData.defaultMember;
 			      		}
 			      		console.log(desiredData.member);
-			      	};
+			      		showMemberSelect(desiredData.member);
+			      	};// End of onload
+			      	
 			      	// Error handle
 			      	reader.onerror = function(e){
         				console.log(e);
@@ -310,9 +312,16 @@
 			      	
 			      	reader.readAsBinaryString(f);
 			    }
-			    document.getElementById('list').innerHTML = '<ul>' + output.join('') + '</ul>';
+			    document.getElementById('list').innerHTML = '<ul>' + output.join('') + '</ul>';   
+			}
 
-			    
+			function showMemberSelect(member){
+				console.log(member);
+				var select = document.getElementById("member");
+				for (var i = 0; i < member.length ; i ++){
+					select.options[select.options.length] = new Option(member[i], member[i]);
+				}
+				document.getElementById("member-container").style.display = "block";
 			}
 
 			function handleDragOver(evt) {
@@ -405,22 +414,15 @@
 			<option value="Dec">Dec</option>
 		</select>
 	</div>
-	
-	<label for="member">Select a member :</label>
-	<div class="selector-container">
-		<select class="form-control" id="member">
-			<option>1</option>
-			<option>2</option>
-			<option>3</option>
-			<option>4</option>
-			<option>5</option>
-		</select>
-	</div>	
-			
+	<div id= "member-container" style="display:none">
+		<label for="member">Select a member :</label>
+		<div class="selector-container">
+			<select class="form-control" id="member"></select>
+		</div>	
+	</div>			
 	<button id="show" onclick='checkAuth()'>show</button>
 	<script>
-		var nowdate = new Date();
-		document.getElementById("month").selectedIndex = nowdate.getMonth() + 1;
+		
 	</script>
 	</body>
 </html>
