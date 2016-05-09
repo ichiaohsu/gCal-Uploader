@@ -1,6 +1,16 @@
 <html lang="en">
 	<head>
-		<script lang="javascript" src="dist/xlsx.core.min.js"></script>
+
+		<!-- Latest compiled and minified CSS -->
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+
+		<script   src="https://code.jquery.com/jquery-2.2.3.min.js"   integrity="sha256-a23g1Nt4dtEYOj7bR+vTu7+T8VP13humZFBJNIYoEJo="   crossorigin="anonymous"></script>
+
+		<!-- Latest compiled and minified JavaScript -->
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+
+		<!-- SheetJS for parsing xls file -->
+		<script lang="javascript" src="js/xlsx.core.min.js"></script>
 		<script>
 			var auth2;
 			var googleUser;
@@ -14,7 +24,16 @@
 			};
 
 			var newevent = {};
-			var dropZone;
+			var desiredData = {
+				'range': {s: {c:0, r:0}, e: {c:0, r:0 }},
+				'previousCell':"",
+				'isBoundarySet': false,
+
+				'member':[],
+				'memberRow': 0,
+				'isMemberSet': false,
+				'defaultMember': ['BS','IU','JO','JP','LY','MY','SQ','WI']
+			};
 			/*
 			var newevent = {
 			  'summary': 'Google I/O 2015',
@@ -165,7 +184,6 @@
 					});
 				}else{
 				// Successful log in. Start loading google calendar api
-				
 					console.log("result true");
 					loadCalendarApi();
 				}
@@ -221,33 +239,72 @@
 			      		var data = e.target.result;
 			      		//console.log(data);
 			      		var workbook = XLSX.read(data, {type: 'binary'});
-			      		
 
-			      		
 			      		var firstsheet = workbook.SheetNames[0];
-			      		//var desired_cell = 'D3';
 			      		var worksheet = workbook.Sheets[firstsheet];
-
-			      		//console.log('D3:' + worksheet['D3'].v);
 
 			      		console.log(worksheet);
 			      		for (z in worksheet){
-			      			console.log(z);
-			      			console.log(typeof(z));
-			      			if(z[0] === '!') continue;
+			      			console.log("current type: " + typeof worksheet[z].v);
+			      			// Set boundary
+			      			if(z[0] === '!') {
+			      				continue;
+			      			}else if(XLSX.utils.decode_cell(z).c == 0){
+			      				console.log('found end column in : ' + z);
+			      				/* 
+			      				 * Set up starting column, ending row and column
+			      				 * Choose first row
+			      				*/
+			      				if(desiredData.previousCell.length != 0 && worksheet[desiredData.previousCell].v == '小夜' && worksheet[z].v == '1'){
+			      					
+			      					desiredData.range.e.c = XLSX.utils.decode_cell(desiredData.previousCell).c;
+			      					desiredData.range.s.r = XLSX.utils.decode_cell(z).r;	
+			      				}
+
+			      				if(XLSX.utils.decode_cell(z).r > 20 && isNaN( parseInt(worksheet[z].v) && !desiredData.isBoundarySet) ){
+			      					if(XLSX.utils.decode_cell(z).r - desiredData.range.s.r < 32){
+			      						desiredData.range.e.r = XLSX.utils.decode_cell(desiredData.previousCell).r;
+			      						desiredData.isBoundarySet = true;
+
+			      						console.log(desiredData.range);
+			      					}
+			      				}
+			      				
+			      				if (desiredData.previousCell.length != 0 && worksheet[desiredData.previousCell].v == '工級人員簽名'){
+				      					desiredData.memberRow = XLSX.utils.decode_cell(z).r;
+				      					console.log("member row: " + desiredData.memberRow);
+
+				      			}
+
+								if(XLSX.utils.decode_cell(z).r >= desiredData.memberRow && desiredData.memberRow > 0){
+			      						
+			      						if ( !worksheet[z].v.startsWith('製') ){
+			      							console.log("add member:" + worksheet[z].v);
+			      							desiredData.member.push(worksheet[z].v);
+										}else{
+											desiredData.memberSet = true;
+											console.log("final");
+										}
+			      					}			      				
+
+			      			}else if(worksheet[z].v == "早班"){
+			      				// Set up starting row
+			      				desiredData.range.s.c = XLSX.utils.decode_cell(z).c;
+			      			}
+
 			      			console.log(z + " = " + JSON.stringify(worksheet[z].v));
+			      			desiredData.previousCell = z;
 			      		};
-			      		//var sheet_name_list = workbook.SheetNames;
-						//sheet_name_list.forEach(function(y) { /* iterate through sheets */
-					  	
-					  	//var worksheet = workbook.Sheets[y];
-						//for (z in worksheet) {
-							/* all keys that do not begin with "!" correspond to cell addresses */
-						//	if(z[0] === '!') continue;
-						//		console.log(y + "!" + z + "=" + JSON.stringify(worksheet[z].v));
-						//	}
-						//});
+			      		if (!desiredData.memberSet){
+			      			desiredData.member = desiredData.defaultMember;
+			      		}
+			      		console.log(desiredData.member);
 			      	};
+			      	// Error handle
+			      	reader.onerror = function(e){
+        				console.log(e);
+   					 };
+			      	
 			      	reader.readAsBinaryString(f);
 			    }
 			    document.getElementById('list').innerHTML = '<ul>' + output.join('') + '</ul>';
@@ -305,15 +362,14 @@
 	    	border-radius: 5px;
 	    	text-align: center;
 	    }
+	    .selector-container{
+	    	width:50px;
+	    }
 	    </style>
 	</head>
 	
 	<body>
 
-	<div id="drop_zone">Drop files here
-		<output id="list"></output>
-	</div>
-	<!-- <output id="list"></output> !-->
 	
 	<div id='name'></div>
 	<div id="signinBtn">
@@ -324,6 +380,33 @@
 		<span class="buttonText">Sign out</span>
 	</div>
 
+	<div id="drop_zone">Drop files here
+		<output id="list"></output>
+	</div>
+	<!-- <output id="list"></output> !-->
+	
+	<label for="month">Select a month :</label>
+	<div class="selector-container">
+		<select class="form-control" id="member">
+			<option value="Jan">Jan</option>
+			<option value="Feb">Feb</option>
+			<option value="Mar">Mar</option>
+			<option value="Apr">Apr</option>
+			<option value="May">May</option>
+		</select>
+	</div>
+	
+	<label for="member">Select a member :</label>
+	<div class="selector-container">
+		<select class="form-control" id="member">
+			<option>1</option>
+			<option>2</option>
+			<option>3</option>
+			<option>4</option>
+			<option>5</option>
+		</select>
+	</div>	
+			
 	<button id="show" onclick='checkAuth()'>show</button>
 	</body>
 </html>
