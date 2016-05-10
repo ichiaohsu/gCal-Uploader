@@ -34,35 +34,35 @@
 				'isMemberSet': false,
 				'defaultMember': ['BS','IU','JO','JP','LY','MY','SQ','WI']
 			};
+			
 			/*
+
+			var idealevent = {
+				'summary': 'QC',
+				'start': {
+					'dateTime': 'year-month-day-T07:00:00-13:00:00',
+					'timeZone': 'Asia/Taipei'
+				},
+				'end':{
+					'dateTime': 'year-month-day-T07:00:00-13:00:00',
+					'timeZone': 'Asia/Taipei'
+				},
+			};
+			*/
 			var newevent = {
 			  'summary': 'Google I/O 2015',
 			  'location': '800 Howard St., San Francisco, CA 94103',
 			  'description': 'A chance to hear more about Google\'s developer products.',
 			  'start': {
-			    'dateTime': '2016-05-28T09:00:00-07:00',
-			    'timeZone': 'America/Los_Angeles'
+			    'dateTime': '2016-05-28T09:00:00',
+			    'timeZone': 'Asia/Taipei'
 			  },
 			  'end': {
-			    'dateTime': '2016-05-28T17:00:00-07:00',
-			    'timeZone': 'America/Los_Angeles'
-			  },
-			  'recurrence': [
-			    'RRULE:FREQ=DAILY;COUNT=2'
-			  ],
-			  'attendees': [
-			    {'email': 'lpage@example.com'},
-			    {'email': 'sbrin@example.com'}
-			  ],
-			  'reminders': {
-			    'useDefault': false,
-			    'overrides': [
-			      {'method': 'email', 'minutes': 24 * 60},
-			      {'method': 'popup', 'minutes': 10}
-			    ]
+			    'dateTime': '2016-05-28T17:00:00',
+			    'timeZone': 'Asia/Taipei'
 			  }
 			};
-			*/
+
 
 			function appStart(){
 				console.log("appStart");
@@ -71,7 +71,7 @@
   					// Great success! All the File APIs are supported.
   					console.log('support fileAPI');
   					// Setup the dnd listeners.
-					dropZone = document.getElementById('drop_zone');
+					dropZone = document.getElementById('drop-zone');
 					dropZone.addEventListener('dragover', handleDragOver, false);
 		 			dropZone.addEventListener('drop', handleFileSelect, false);
 
@@ -80,6 +80,7 @@
 				}
 
 				var nowdate = new Date();
+				// Default month is next month
 				document.getElementById("month").selectedIndex = nowdate.getMonth() + 1;
 
 				gapi.load('auth2', function(){
@@ -204,11 +205,23 @@
 
 			function loadCalendarApi(){
 				console.log("loadCalendarApi");
-				gapi.client.load('calendar', 'v3', updateEvent);
+				gapi.client.load('calendar', 'v3', insertEvent);
 			}
 
-			function updateEvent(){
-				console.log("updateEvent");
+			function insertEvent(){
+				var mth = document.getElementById("month");
+				var mber = document.getElementById("member");
+				console.log("insertEvent");
+
+				var selectMonth = mth.options[mth.selectedIndex].value;
+				var selectMember = mber.options[mber.selectedIndex].value;
+				console.log("selectMonth: " + selectMonth + ", selectMember: " + selectMember);
+
+				/*
+				 * Extract data and form event object
+				 */
+
+
 				var request = gapi.client.calendar.events.insert({
   				'calendarId': 'primary',
   				'resource': newevent
@@ -301,7 +314,7 @@
 			      		if (!desiredData.memberSet){
 			      			desiredData.member = desiredData.defaultMember;
 			      		}
-			      		console.log(desiredData.member);
+			      		//console.log(desiredData.member);
 			      		showMemberSelect(desiredData.member);
 			      	};// End of onload
 			      	
@@ -318,10 +331,12 @@
 			function showMemberSelect(member){
 				console.log(member);
 				var select = document.getElementById("member");
+				// Dynamically generate select options
 				for (var i = 0; i < member.length ; i ++){
 					select.options[select.options.length] = new Option(member[i], member[i]);
 				}
 				document.getElementById("member-container").style.display = "block";
+				document.getElementById("show").removeAttribute("disabled");
 			}
 
 			function handleDragOver(evt) {
@@ -359,7 +374,7 @@
 	      	white-space: nowrap;
 	    }
 
-	    #drop_zone{
+	    #drop-zone{
 	    	margin-left: 10%;
 	    	margin-right: 10%;
 	    	margin-top: 30px;
@@ -376,6 +391,7 @@
 	    }
 	    .selector-container{
 	    	width: 65px;
+	    	margin: 5px;
 	    }
 	    </style>
 	</head>
@@ -392,35 +408,36 @@
 		<span class="buttonText">Sign out</span>
 	</div>
 
-	<div id="drop_zone">Drop files here
+	<div id="drop-zone">Drop files here
 		<output id="list"></output>
 	</div>
-	<!-- <output id="list"></output> !-->
-	
+
 	<label for="month">Select a month :</label>
 	<div class="selector-container">
 		<select class="form-control" id="month">
-			<option value="Jan">Jan</option>
-			<option value="Feb">Feb</option>
-			<option value="Mar">Mar</option>
-			<option value="Apr">Apr</option>
-			<option value="May">May</option>
-			<option value="Jun">Jun</option>
-			<option value="Jul">Jul</option>
-			<option value="Aug">Aug</option>
-			<option value="Sep">Sep</option>
-			<option value="Oct">Oct</option>
-			<option value="Nov">Nov</option>
-			<option value="Dec">Dec</option>
+			<option value="01">Jan</option>
+			<option value="02">Feb</option>
+			<option value="03">Mar</option>
+			<option value="04">Apr</option>
+			<option value="05">May</option>
+			<option value="06">Jun</option>
+			<option value="07">Jul</option>
+			<option value="08">Aug</option>
+			<option value="09">Sep</option>
+			<option value="10">Oct</option>
+			<option value="11">Nov</option>
+			<option value="12">Dec</option>
 		</select>
 	</div>
+
 	<div id= "member-container" style="display:none">
 		<label for="member">Select a member :</label>
 		<div class="selector-container">
-			<select class="form-control" id="member"></select>
+			<select class="form-control" id="member" required></select>
 		</div>	
-	</div>			
-	<button id="show" onclick='checkAuth()'>show</button>
+	</div>
+
+	<button id="show" onclick='checkAuth()' class="btn btn-primary" disabled>show</button>
 	<script>
 		
 	</script>
