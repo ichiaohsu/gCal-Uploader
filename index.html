@@ -18,12 +18,11 @@
 			
 			var params = {
 				client_id: "877919083410-kmf5737t33qkkrlo33ljlnho5ovl7r76.apps.googleusercontent.com",
-				scope: "profile https://www.googleapis.com/auth/userinfo.email ",
+				scope: "profile https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/calendar",
 				fetch_basic_profile: true,
 				prompt: "none"
 			};
 
-			var newevent = {};
 			var desiredData = {
 				'range': {s: {c:0, r:0}, e: {c:0, r:0 }},
 				'previousCell':"",
@@ -34,35 +33,9 @@
 				'isMemberSet': false,
 				'defaultMember': ['BS','IU','JO','JP','LY','MY','SQ','WI']
 			};
-			
-			/*
+			var worksheet;
 
-			var idealevent = {
-				'summary': 'QC',
-				'start': {
-					'dateTime': 'year-month-day-T07:00:00-13:00:00',
-					'timeZone': 'Asia/Taipei'
-				},
-				'end':{
-					'dateTime': 'year-month-day-T07:00:00-13:00:00',
-					'timeZone': 'Asia/Taipei'
-				},
-			};
-			*/
-			var newevent = {
-			  'summary': 'Google I/O 2015',
-			  'location': '800 Howard St., San Francisco, CA 94103',
-			  'description': 'A chance to hear more about Google\'s developer products.',
-			  'start': {
-			    'dateTime': '2016-05-28T09:00:00',
-			    'timeZone': 'Asia/Taipei'
-			  },
-			  'end': {
-			    'dateTime': '2016-05-28T17:00:00',
-			    'timeZone': 'Asia/Taipei'
-			  }
-			};
-
+			var timearr = [];
 
 			function appStart(){
 				console.log("appStart");
@@ -82,6 +55,7 @@
 				var nowdate = new Date();
 				// Default month is next month
 				document.getElementById("month").selectedIndex = nowdate.getMonth() + 1;
+				timearr.push( nowdate.getFullYear().toString() );
 
 				gapi.load('auth2', function(){
 
@@ -99,6 +73,7 @@
 						auth2.signIn().then(function() {
 			    			
 			    			googleUser = auth2.currentUser.get();
+			    			console.log(googleUser);
 							onSuccess(googleUser);
 			  				}, onFailure 
 		  				);	
@@ -126,8 +101,7 @@
 
 				if (auth2.isSignedIn.get() == true){
 					console.log("now user: " + user.getBasicProfile().getEmail());
-					document.getElementById('name').innerText = "Signed in: " +
-			            user.getBasicProfile().getEmail();
+					document.getElementById('name').innerText = user.getBasicProfile().getEmail();
 				}
 				googleUser = user;
 			}
@@ -135,11 +109,11 @@
 			function signinChanged(val){
 				console.log("sign in state change to: " + val);
 				if (!val){
-					document.getElementById('signoutBtn').style.display = "none";
-					document.getElementById('name').style.display = "none";
+					document.getElementById('signoutBtn').style.visibility = "hidden";
+					document.getElementById('name').style.visibility = "hidden";
 				}else{
-					document.getElementById('signoutBtn').style.display = "inline-block";
-					document.getElementById('name').style.display = "block";
+					document.getElementById('signoutBtn').style.visibility = "visible";
+					document.getElementById('name').style.visibility = "visible";
 				}
 			}
 
@@ -169,21 +143,38 @@
 
 				console.log("authResultHandle");
 				console.log(result);
+				if (!result){
+					console.log("result empty");
+				}
+				if (result.error){
+					console.log("result error");
+				}
+
+				if (!googleUser.hasGrantedScopes('email https://www.googleapis.com/auth/calendar')){
+					console.log("User not grant calendar");
+				}
+				console.log(result.error);
+				console.log(googleUser.hasGrantedScopes('email https://www.googleapis.com/auth/calendar'));
 				if (!result || result.error || !googleUser.hasGrantedScopes('email https://www.googleapis.com/auth/calendar') ){
 				// Fail case
 					console.log("result false");
 					
 					var options = new gapi.auth2.SigninOptionsBuilder(
 			        {'scope': 'email https://www.googleapis.com/auth/calendar',
-			    	 'prompt': 'select_account consent'});
+			    	 'prompt': 'select_account consent',
+			    	});
+
+					//console.log(options);
 
 					googleUser = auth2.currentUser.get();
 					googleUser.grant(options).then(
 			    	
 			    	function(success){
+			    		console.log("Success");
 			     		console.log(JSON.stringify({message: "success", value: success}));
 			    	},
 			    	function(fail){
+			    		console.log("fail");
 			      		alert(JSON.stringify({message: "fail", value: fail}));
 					});
 				}else{
@@ -194,45 +185,220 @@
 			}
 
 			function checkAuth() {
-				console.log("checkAuth");
+				console.log("checkAuth userNum: " + userNum);
 				gapi.auth.authorize({
 					client_id: "877919083410-kmf5737t33qkkrlo33ljlnho5ovl7r76.apps.googleusercontent.com",
 					scope: "email https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/userinfo.email",
-					immediate: true,
+					immediate: false,
 					authuser: userNum}, authResultHandle);
 			}
 
 
 			function loadCalendarApi(){
 				console.log("loadCalendarApi");
-				gapi.client.load('calendar', 'v3', insertEvent);
+				gapi.client.load('calendar', 'v3', getInsertData);
 			}
 
-			function insertEvent(){
+			function formatDay(n){
+    			return n > 9 ? "" + n: "0" + n;
+			}
+
+			function checkDate(arr){
+				var m = parseInt(arr[1]);
+				var d = parseInt(arr[2]);
+				switch(m){
+					case 1:
+					case 3:
+					case 5:
+					case 7:
+					case 8:
+					case 10:
+					case 12:
+						if (arr[2] > 31){
+							arr[1] = (m+1).toString();
+							arr[2] = "1";
+						}
+						break;
+					case 2:
+						if (arr[2] > 28){
+							arr[1] = (m+1).toString();
+							arr[2] = "1";
+						}
+						break;
+					case 4:
+					case 6:
+					case 9:
+					case 11:
+						if (arr[2] > 30){
+								arr[1] = (m+1).toString();
+								arr[2] = "1";
+							}
+						break;
+				}
+				console.log(arr);
+				return arr;
+			}
+
+			function getInsertData(){
+
+				console.log("getInsertData");
 				var mth = document.getElementById("month");
 				var mber = document.getElementById("member");
-				console.log("insertEvent");
-
+				
 				var selectMonth = mth.options[mth.selectedIndex].value;
 				var selectMember = mber.options[mber.selectedIndex].value;
-				console.log("selectMonth: " + selectMonth + ", selectMember: " + selectMember);
+				timearr.push(selectMonth);
 
+				var day = 1;
+				var eventarr=[];
 				/*
 				 * Extract data and form event object
 				 */
+				for(var R = desiredData.range.s.r; R <= desiredData.range.e.r; ++R) {
+  					for(var C = desiredData.range.s.c; C <= desiredData.range.e.c; ++C) {
 
+    					var cell_address = {c:C, r:R};
+    					var encode_address = XLSX.utils.encode_cell(cell_address);
+  						console.log("encode_address: " + encode_address);
+  						if (typeof worksheet[encode_address] != "undefined"){
+  							//("0" + daycount).slice(-2)
+  							if (worksheet[encode_address].v === selectMember){
+  								
+  								// Use local object to avoid day incorrectness.
+  								// Declare as global would cause this incorrectness.
+  								var radioevent = {
+									'summary': '',
+									'start':{
+										'dateTime': '',
+										'timeZone': 'Asia/Taipei'
+									},
+									'end':{
+										'dateTime': '',
+										'timeZone': 'Asia/Taipei'
+									}
+								};
+  								console.log("cell: " + encode_address);
+
+  								timearr[2] = formatDay(day);
+  								
+  								switch(cell_address.c){
+  									case 2:
+  									case 3:
+  									case 4:
+  										radioevent.summary = 'QC';
+  										radioevent.start.dateTime = timearr.join('-') + "T07:00:00";
+  										radioevent.end.dateTime = timearr.join('-') + "T13:00:00";
+  										break;
+  									case 5:
+  									case 6:
+  									case 7:
+  										radioevent.summary = "QC";
+  										radioevent.start.dateTime = timearr.join('-') + "T13:00:00";
+  										radioevent.end.dateTime = timearr.join('-') + "T19:00:00";
+  										break;
+  									case 8:
+  										radioevent.summary = "QC_L";
+  										radioevent.start.dateTime = timearr.join('-') + "T19:00:00";
+  										
+  										timearr[2] = formatDay(day+1);
+  										console.log(timearr);
+  										timearr = checkDate(timearr);
+										console.log(timearr);
+										radioevent.end.dateTime = timearr.join('-') + "T07:00:00";
+  										break;
+
+  									case 9:
+  										radioevent.summary = "QC_G";
+  										radioevent.start.dateTime = timearr.join('-') + "T19:00:00";
+  										
+  										timearr[2] = formatDay(day+1);
+  										console.log(timearr);
+  										timearr = checkDate(timearr);
+  										console.log(timearr);
+  										radioevent.end.dateTime = timearr.join('-') + "T07:00:00";
+  										break;
+  								}//End of switch
+  								console.log(radioevent);
+
+  								eventarr.push(radioevent);
+  								
+  							}// End ** if (worksheet[encode_address].v === selectMember)
+  						}// End ** if (typeof worksheet[encode_address] != "undefined")
+  					}
+  					day++;
+				}// End of for loop
+				insertEvent(eventarr);
+			}// End ** function insertEvent
+
+			function insertEvent(eventlist){
+
+				console.log(eventlist);
+				console.log("insertEvent: " + eventlist.length);
+				
+				var i = 0;
+				var nInterId;
+				var insertResult;
+				var resultarr = [];
+				nInterId = setInterval(function(){
+
+					if (i < eventlist.length){
+						insertResult = insertRequest(eventlist[i],1000,3,i);
+						console.log("insertResult: " + insertResult + ", type: " + typeof insertResult);
+						resultarr[i] = insertResult; 
+						i++;
+
+						console.log(resultarr);
+					}else{
+						clearInterval(nInterId);
+						console.log("clearInterval");
+					}
+				}, 3000);	
+			}
+
+			function insertRequest(singleEvent,delay,retry,eventnum){
+
+				console.log(eventnum + " insertRequest");
+				var resultStatus;
+				var intervalId;
 
 				var request = gapi.client.calendar.events.insert({
-  				'calendarId': 'primary',
-  				'resource': newevent
+			  		'calendarId': 'primary',
+			  		'resource': singleEvent
 				});
 
 				request.execute(function(result) {
-	  				console.log("insert result");
-	  				console.log(result);
+					console.log(result);
+					console.log(eventnum + " request result: " + result.status + ", type: " + typeof result.status);
+					resultStatus = result.status;
 				});
-			}
 
+				intervalId = setInterval(function(){
+					if (typeof resultStatus != "undefined"){
+						clearInterval(intervalId);
+						
+						if (resultStatus != "confirmed"){
+							
+							if (retry > 0){
+								delay *= 2;
+								retry -= 1;
+								console.log(eventnum + " delay: " +  delay + ", retry: " + retry);
+								timeout = setTimeout(function(){
+									insertRequest(singleEvent,delay,retry);
+								},delay);
+							}else{
+								console.log(eventnum + " Retry used up. Give up on this event");
+								return false;
+							}
+
+						}else{
+							console.log(eventnum + " " + resultStatus);
+							return true;
+						}
+					}else{
+						console.log(eventnum + " Result status undefined. Not receive result yet.");
+					}
+				}, 1000);
+			}
 
 			function handleFileSelect(evt) {
 				console.log('handleFileSelect');
@@ -257,16 +423,14 @@
 			      		var workbook = XLSX.read(data, {type: 'binary'});
 
 			      		var firstsheet = workbook.SheetNames[0];
-			      		var worksheet = workbook.Sheets[firstsheet];
-
-			      		console.log(worksheet);
+			      		worksheet = workbook.Sheets[firstsheet];
+			      		//console.log(worksheet);
 			      		for (z in worksheet){
-			      			console.log("current type: " + typeof worksheet[z].v);
 			      			// Set boundary
 			      			if(z[0] === '!') {
 			      				continue;
 			      			}else if(XLSX.utils.decode_cell(z).c == 0){
-			      				console.log('found end column in : ' + z);
+			      				console.log('first column');
 			      				/* 
 			      				 * Set up starting column, ending row and column
 			      				 * Choose first row
@@ -277,8 +441,11 @@
 			      					desiredData.range.s.r = XLSX.utils.decode_cell(z).r;	
 			      				}
 
-			      				if(XLSX.utils.decode_cell(z).r > 20 && isNaN( parseInt(worksheet[z].v) && !desiredData.isBoundarySet) ){
+			      				// For special character 連班上限......
+			      				if(XLSX.utils.decode_cell(z).r > 20 && isNaN( parseInt(worksheet[z].v) ) && !desiredData.isBoundarySet ){
+			      					console.log("first layer");
 			      					if(XLSX.utils.decode_cell(z).r - desiredData.range.s.r < 32){
+			      						console.log("second layer");
 			      						desiredData.range.e.r = XLSX.utils.decode_cell(desiredData.previousCell).r;
 			      						desiredData.isBoundarySet = true;
 
@@ -310,11 +477,18 @@
 
 			      			console.log(z + " = " + JSON.stringify(worksheet[z].v));
 			      			desiredData.previousCell = z;
-			      		};
+			      		};//End of for loop
 			      		if (!desiredData.memberSet){
 			      			desiredData.member = desiredData.defaultMember;
 			      		}
-			      		//console.log(desiredData.member);
+
+			      		// If boundary still not set, use the last cell as lower boundary
+			      		if (!desiredData.isBoundarySet ){
+			      			desiredData.range.e.r = XLSX.utils.decode_cell(desiredData.previousCell).r;
+			      			desiredData.isBoundarySet = true;
+
+			      			console.log(desiredData.range);
+			      		}
 			      		showMemberSelect(desiredData.member);
 			      	};// End of onload
 			      	
@@ -336,7 +510,7 @@
 					select.options[select.options.length] = new Option(member[i], member[i]);
 				}
 				document.getElementById("member-container").style.display = "block";
-				document.getElementById("show").removeAttribute("disabled");
+				document.getElementById("insert").removeAttribute("disabled");
 			}
 
 			function handleDragOver(evt) {
@@ -393,19 +567,39 @@
 	    	width: 65px;
 	    	margin: 5px;
 	    }
+
+	    #header{
+	    	height: 80px;
+	    	background-color: #000;
+	    }
+	    #name{
+	    	color: #FFF;
+	    }
+
+	    #button-zone{
+	    	width:300px;
+	    	position: absolute;
+	    	right: 20px;
+	    }
 	    </style>
 	</head>
 	
 	<body>
 
 	
-	<div id='name'></div>
-	<div id="signinBtn">
-		<span class="buttonText">Google</span>
-	</div>
+	<div class=container id="header">
+		
+		<div id='name'></div>
+		
+		<div id = "button-zone">
+			<div id="signinBtn">
+				<span class="buttonText">Google</span>
+			</div>
 
-	<div id="signoutBtn" onclick="signOut()">
-		<span class="buttonText">Sign out</span>
+			<div id="signoutBtn" onclick="signOut()">
+				<span class="buttonText">Sign out</span>
+			</div>
+		</div>
 	</div>
 
 	<div id="drop-zone">Drop files here
@@ -437,7 +631,7 @@
 		</div>	
 	</div>
 
-	<button id="show" onclick='checkAuth()' class="btn btn-primary" disabled>show</button>
+	<button id="insert" onclick='checkAuth()' class="btn btn-primary" disabled>Insert</button>
 	<script>
 		
 	</script>
