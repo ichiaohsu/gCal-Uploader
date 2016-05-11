@@ -26,13 +26,11 @@
 			var desiredData = {
 				'range': {s: {c:0, r:0}, e: {c:0, r:0 }},
 				'previousCell':"",
-				'isBoundarySet': false,
+				'isStartingSet':false,
 
 				'member':[],
-				'memberRow': 0,
-				'isMemberSet': false,
-				'defaultMember': ['BS','IU','JO','JP','LY','MY','SQ','WI']
 			};
+			
 			var worksheet;
 
 			var timearr = [];
@@ -48,7 +46,8 @@
 					dropZone.addEventListener('dragover', handleDragOver, false);
 		 			dropZone.addEventListener('drop', handleFileSelect, false);
 
-				} else {
+				} 
+				else {
   					alert('The File APIs are not fully supported in this browser.');
 				}
 
@@ -67,7 +66,8 @@
 
 					if (auth2.isSignedIn.get() == true){
 						console.log("already sign in");
-					}else{
+					}
+					else{
 						console.log("Not yet sign in");
 						
 						auth2.signIn().then(function() {
@@ -111,7 +111,8 @@
 				if (!val){
 					document.getElementById('signoutBtn').style.visibility = "hidden";
 					document.getElementById('name').style.visibility = "hidden";
-				}else{
+				}
+				else{
 					document.getElementById('signoutBtn').style.visibility = "visible";
 					document.getElementById('name').style.visibility = "visible";
 				}
@@ -177,7 +178,8 @@
 			    		console.log("fail");
 			      		alert(JSON.stringify({message: "fail", value: fail}));
 					});
-				}else{
+				}
+				else{
 				// Successful log in. Start loading google calendar api
 					console.log("result true");
 					loadCalendarApi();
@@ -347,9 +349,10 @@
 						resultarr[i] = insertResult; 
 						i++;
 
-						console.log(resultarr);
-					}else{
+					}
+					else{
 						clearInterval(nInterId);
+						console.log(resultarr);
 						console.log("clearInterval");
 					}
 				}, 3000);	
@@ -385,16 +388,19 @@
 								timeout = setTimeout(function(){
 									insertRequest(singleEvent,delay,retry);
 								},delay);
-							}else{
+							}
+							else{
 								console.log(eventnum + " Retry used up. Give up on this event");
 								return false;
 							}
 
-						}else{
+						}
+						else{
 							console.log(eventnum + " " + resultStatus);
 							return true;
 						}
-					}else{
+					}
+					else{
 						console.log(eventnum + " Result status undefined. Not receive result yet.");
 					}
 				}, 1000);
@@ -429,16 +435,15 @@
 			      			// Set boundary
 			      			if(z[0] === '!') {
 			      				continue;
-			      			}else if(XLSX.utils.decode_cell(z).c == 0){
+			      			}
+			      			else if(XLSX.utils.decode_cell(z).c == 0){
 			      				console.log('first column');
-			      				/* 
-			      				 * Set up starting column, ending row and column
-			      				 * Choose first row
-			      				*/
+			      				// Use column A to set up starting row and ending column
 			      				if(desiredData.previousCell.length != 0 && worksheet[desiredData.previousCell].v == '小夜' && worksheet[z].v == '1'){
 			      					
 			      					desiredData.range.e.c = XLSX.utils.decode_cell(desiredData.previousCell).c;
 			      					desiredData.range.s.r = XLSX.utils.decode_cell(z).r;	
+			      					desiredData.isStartingSet = true;
 			      				}
 
 			      				// For special character 連班上限......
@@ -452,35 +457,27 @@
 			      						console.log(desiredData.range);
 			      					}
 			      				}
-			      				
-			      				if (desiredData.previousCell.length != 0 && worksheet[desiredData.previousCell].v == '工級人員簽名'){
-				      					desiredData.memberRow = XLSX.utils.decode_cell(z).r;
-				      					console.log("member row: " + desiredData.memberRow);
-
-				      			}
-
-								if(XLSX.utils.decode_cell(z).r >= desiredData.memberRow && desiredData.memberRow > 0){
-			      						
-			      						if ( !worksheet[z].v.startsWith('製') ){
-			      							console.log("add member:" + worksheet[z].v);
-			      							desiredData.member.push(worksheet[z].v);
-										}else{
-											desiredData.memberSet = true;
-											console.log("final");
-										}
-			      					}			      				
-
-			      			}else if(worksheet[z].v == "早班"){
+			      			}
+			      			else if(worksheet[z].v == "早班"){
 			      				// Set up starting row
 			      				desiredData.range.s.c = XLSX.utils.decode_cell(z).c;
+			      			}
+
+			      			// Check if content member are included in member array
+			      			if (desiredData.isStartingSet){
+			      				
+			      				if (XLSX.utils.decode_cell(z).c >= desiredData.range.s.c && XLSX.utils.decode_cell(z).r >= desiredData.range.s.r && XLSX.utils.decode_cell(z).c <= desiredData.range.e.c){
+			      					// data in desired range
+			      					if (desiredData.member.indexOf(worksheet[z].v) < 0){
+			      						console.log(z + " member not in member-array: " + desiredData.member);
+			      						desiredData.member.push(worksheet[z].v);
+			      					}
+			      				}
 			      			}
 
 			      			console.log(z + " = " + JSON.stringify(worksheet[z].v));
 			      			desiredData.previousCell = z;
 			      		};//End of for loop
-			      		if (!desiredData.memberSet){
-			      			desiredData.member = desiredData.defaultMember;
-			      		}
 
 			      		// If boundary still not set, use the last cell as lower boundary
 			      		if (!desiredData.isBoundarySet ){
