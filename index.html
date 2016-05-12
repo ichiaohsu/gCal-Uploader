@@ -506,7 +506,7 @@
 				for (var i = 0; i < member.length ; i ++){
 					select.options[select.options.length] = new Option(member[i], member[i]);
 				}
-				document.getElementById("member-container").style.display = "block";
+				document.getElementById("member-container").style.display = "inline-block";
 				document.getElementById("insert").removeAttribute("disabled");
 			}
 
@@ -519,72 +519,12 @@
 
 		</script>
 		<script src="https://apis.google.com/js/client.js?onload=appStart"></script>
-
-		<style type="text/css">
-	    #signinBtn {
-	      display: inline-block;
-	      background: white;
-	      color: #444;
-	      width: 100px;
-	      height: 30px;
-	      border-radius: 5px;
-	      border: thin solid #888;
-	      box-shadow: 1px 1px 1px grey;
-	      white-space: nowrap;
-	    }
-
-	    #signoutBtn{
-	    	display: inline-block;
-	    	background: white;
-	    	color: #222;
-	    	width: 100px;
-	    	height:30px;
-	    	border-radius: 5px;
-	      	border: thin solid #888;
-	      	box-shadow: 1px 1px 1px grey;
-	      	white-space: nowrap;
-	    }
-
-	    #drop-zone{
-	    	margin-left: 10%;
-	    	margin-right: 10%;
-	    	margin-top: 30px;
-	    	margin-bottom: 30px;
-	    	font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif;
-	    	font-size: 26px;
-	    	color: #BBB;
-	    	padding: 25px;
-	    	width: 80%;
-	    	height: 60%;
-	    	border: 2px dashed #BBB;
-	    	border-radius: 5px;
-	    	text-align: center;
-	    }
-	    .selector-container{
-	    	width: 65px;
-	    	margin: 5px;
-	    }
-
-	    #header{
-	    	height: 80px;
-	    	background-color: #000;
-	    }
-	    #name{
-	    	color: #FFF;
-	    }
-
-	    #button-zone{
-	    	width:300px;
-	    	position: absolute;
-	    	right: 20px;
-	    }
-	    </style>
+		<link href="main.css" rel="stylesheet"/>
 	</head>
 	
 	<body>
-
 	
-	<div class=container id="header">
+	<div class="fluid-container" id="header">
 		
 		<div id='name'></div>
 		
@@ -602,35 +542,39 @@
 	<div id="drop-zone">Drop files here
 		<output id="list"></output>
 	</div>
+	
+	<div class="fluid-container">
+		<!-- Maybe need to use the same container to host both month and member select,
+			 then use create node function in JavaScript -->
+		<div id="month-container">
+			<label for="month">Select a month :</label>
+			<div class="selector-container">
+				<select class="form-control" id="month">
+					<option value="01">Jan</option>
+					<option value="02">Feb</option>
+					<option value="03">Mar</option>
+					<option value="04">Apr</option>
+					<option value="05">May</option>
+					<option value="06">Jun</option>
+					<option value="07">Jul</option>
+					<option value="08">Aug</option>
+					<option value="09">Sep</option>
+					<option value="10">Oct</option>
+					<option value="11">Nov</option>
+					<option value="12">Dec</option>
+				</select>
+			</div>
+		</div>
 
-	<label for="month">Select a month :</label>
-	<div class="selector-container">
-		<select class="form-control" id="month">
-			<option value="01">Jan</option>
-			<option value="02">Feb</option>
-			<option value="03">Mar</option>
-			<option value="04">Apr</option>
-			<option value="05">May</option>
-			<option value="06">Jun</option>
-			<option value="07">Jul</option>
-			<option value="08">Aug</option>
-			<option value="09">Sep</option>
-			<option value="10">Oct</option>
-			<option value="11">Nov</option>
-			<option value="12">Dec</option>
-		</select>
+		<div id= "member-container" style="display:none">
+			<label for="member">Select a member :</label>
+			<div class="selector-container">
+				<select class="form-control" id="member" required></select>
+			</div>	
+		</div>
+
+		<button id="insert" onclick='checkAuth()' class="btn btn-primary" disabled>Insert</button>
 	</div>
 
-	<div id= "member-container" style="display:none">
-		<label for="member">Select a member :</label>
-		<div class="selector-container">
-			<select class="form-control" id="member" required></select>
-		</div>	
-	</div>
-
-	<button id="insert" onclick='checkAuth()' class="btn btn-primary" disabled>Insert</button>
-	<script>
-		
-	</script>
 	</body>
 </html>
