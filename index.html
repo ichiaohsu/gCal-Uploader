@@ -447,9 +447,9 @@
 			      				}
 
 			      				// For special character 連班上限......
-			      				if(XLSX.utils.decode_cell(z).r > 20 && isNaN( parseInt(worksheet[z].v) ) && !desiredData.isBoundarySet ){
+			      				if(XLSX.utils.decode_cell(z).r > 27 && isNaN( parseInt(worksheet[z].v) ) && !desiredData.isBoundarySet ){
 			      					console.log("first layer");
-			      					if(XLSX.utils.decode_cell(z).r - desiredData.range.s.r < 32){
+			      					if(XLSX.utils.decode_cell(z).r - desiredData.range.s.r < 33){
 			      						console.log("second layer");
 			      						desiredData.range.e.r = XLSX.utils.decode_cell(desiredData.previousCell).r;
 			      						desiredData.isBoundarySet = true;
@@ -466,12 +466,14 @@
 			      			// Check if content member are included in member array
 			      			if (desiredData.isStartingSet){
 			      				
-			      				if (XLSX.utils.decode_cell(z).c >= desiredData.range.s.c && XLSX.utils.decode_cell(z).r >= desiredData.range.s.r && XLSX.utils.decode_cell(z).c <= desiredData.range.e.c){
-			      					// data in desired range
-			      					if (desiredData.member.indexOf(worksheet[z].v) < 0){
-			      						console.log(z + " member not in member-array: " + desiredData.member);
-			      						desiredData.member.push(worksheet[z].v);
-			      					}
+			      				if (!desiredData.isBoundarySet){
+				      				if (XLSX.utils.decode_cell(z).c >= desiredData.range.s.c && XLSX.utils.decode_cell(z).r >= desiredData.range.s.r && XLSX.utils.decode_cell(z).c <= desiredData.range.e.c){
+				      					// data in desired range
+				      					if (desiredData.member.indexOf(worksheet[z].v) < 0){
+				      						console.log(z + " member not in member-array: " + desiredData.member);
+				      						desiredData.member.push(worksheet[z].v);
+				      					}
+				      				}
 			      				}
 			      			}
 
