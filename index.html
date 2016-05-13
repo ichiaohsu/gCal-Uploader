@@ -430,26 +430,28 @@
 
 			      		var firstsheet = workbook.SheetNames[0];
 			      		worksheet = workbook.Sheets[firstsheet];
+			      		
 			      		//console.log(worksheet);
 			      		for (z in worksheet){
+			      			var z_addr = XLSX.utils.decode_cell(z);
 			      			// Set boundary
 			      			if(z[0] === '!') {
 			      				continue;
 			      			}
-			      			else if(XLSX.utils.decode_cell(z).c == 0){
+			      			else if(z_addr.c == 0){
 			      				console.log('first column');
 			      				// Use column A to set up starting row and ending column
 			      				if(desiredData.previousCell.length != 0 && worksheet[desiredData.previousCell].v == '小夜' && worksheet[z].v == '1'){
 			      					
 			      					desiredData.range.e.c = XLSX.utils.decode_cell(desiredData.previousCell).c;
-			      					desiredData.range.s.r = XLSX.utils.decode_cell(z).r;	
+			      					desiredData.range.s.r = z_addr.r;	
 			      					desiredData.isStartingSet = true;
 			      				}
 
 			      				// For special character 連班上限......
-			      				if(XLSX.utils.decode_cell(z).r > 27 && isNaN( parseInt(worksheet[z].v) ) && !desiredData.isBoundarySet ){
+			      				if(z_addr.r > 27 && isNaN( parseInt(worksheet[z].v) ) && !desiredData.isBoundarySet ){
 			      					console.log("first layer");
-			      					if(XLSX.utils.decode_cell(z).r - desiredData.range.s.r < 33){
+			      					if(z_addr.r - desiredData.range.s.r < 33){
 			      						console.log("second layer");
 			      						desiredData.range.e.r = XLSX.utils.decode_cell(desiredData.previousCell).r;
 			      						desiredData.isBoundarySet = true;
@@ -460,15 +462,15 @@
 			      			}
 			      			else if(worksheet[z].v == "早班"){
 			      				// Set up starting row
-			      				desiredData.range.s.c = XLSX.utils.decode_cell(z).c;
+			      				desiredData.range.s.c = z_addr.c;
 			      			}
 
-			      			// Check if content member are included in member array
+			      			// Check if address are in bondary, ready to check member
 			      			if (desiredData.isStartingSet){
-			      				
+			      				// Not yet reach lower boundary
 			      				if (!desiredData.isBoundarySet){
-				      				if (XLSX.utils.decode_cell(z).c >= desiredData.range.s.c && XLSX.utils.decode_cell(z).r >= desiredData.range.s.r && XLSX.utils.decode_cell(z).c <= desiredData.range.e.c){
-				      					// data in desired range
+				      				if (z_addr.c >= desiredData.range.s.c && z_addr.r >= desiredData.range.s.r && z_addr.c <= desiredData.range.e.c){
+				      					// Member not in member array. Not support IE9 or below.
 				      					if (desiredData.member.indexOf(worksheet[z].v) < 0){
 				      						console.log(z + " member not in member-array: " + desiredData.member);
 				      						desiredData.member.push(worksheet[z].v);
