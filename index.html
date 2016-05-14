@@ -28,6 +28,7 @@
 				'range': {s: {c:0, r:0}, e: {c:0, r:0 }},
 				'previousCell':"",
 				'isStartingSet':false,
+				'isBoundarySet':false,
 
 				'member':[],
 			};
@@ -468,32 +469,36 @@
 
 			      					desiredData.range.e.c = XLSX.utils.decode_cell(desiredData.previousCell).c;
 			      					desiredData.range.s.r = z_addr.r;
-			      					desiredData.isStartingSet = true;
-			      				}
+			    					desiredData.isStartingSet = true;
+			    				}
 
-			      				// For special character 連班上限......
-			      				if(z_addr.r > 27 && isNaN( parseInt(worksheet[z].v) ) && !desiredData.isBoundarySet ){
-			      					console.log("first layer");
-			      					if(z_addr.r - desiredData.range.s.r < 33){
-			      						console.log("second layer");
-			      						desiredData.range.e.r = XLSX.utils.decode_cell(desiredData.previousCell).r;
-			      						desiredData.isBoundarySet = true;
 
-			      						console.log(desiredData.range);
-			      					}
-			      				}
-			      			}
-			      			else if(worksheet[z].v == "早班"){
-			      				// Set up starting row
-			      				desiredData.range.s.c = z_addr.c;
-			      			}
+			    				/* For special character 連班上限......
+								 * If use if(z_addr.r > 27 && isNaN( parseInt(worksheet[z].v) ) &&!desiredData.isBoundarySet) here
+								 * It wouldn't find if isBoundarySet doesn't exist in the very beginning
+								*/
+			    				if(z_addr.r > 27 && isNaN( parseInt(worksheet[z].v) ) && desiredData.isBoundarySet === false){
+			    					console.log("first layer");
+			    					if(z_addr.r - desiredData.range.s.r < 33){
+			    						console.log("second layer");
+			    						desiredData.range.e.r = XLSX.utils.decode_cell(desiredData.previousCell).r;
+			    						desiredData.isBoundarySet = true;
 
-			      			// Check if address are in bondary, ready to check member
-			      			if (desiredData.isStartingSet){
-			      				// Not yet reach lower boundary
-			      				if (!desiredData.isBoundarySet){
-				      				if (z_addr.c >= desiredData.range.s.c && z_addr.r >= desiredData.range.s.r && z_addr.c <= desiredData.range.e.c){
-				      					// Member not in member array. Not support IE9 or below.
+			    						console.log(desiredData.range);
+			    					}
+			    				}
+			    			}
+			    			else if(worksheet[z].v == "早班"){
+			    				// Set up starting row
+			    				desiredData.range.s.c = z_addr.c;
+			    			}
+
+			    			// Check if address are in bondary, ready to check member
+			    			if (desiredData.isStartingSet){
+			    				// Not yet reach lower boundary
+			    				if (!desiredData.isBoundarySet){
+				    				if (z_addr.c >= desiredData.range.s.c && z_addr.r >= desiredData.range.s.r && z_addr.c <= desiredData.range.e.c){
+				    					// Member not in member array. Not support IE9 or below.
 				      					if (desiredData.member.indexOf(worksheet[z].v) < 0){
 				      						console.log(z + " member not in member-array: " + desiredData.member);
 				      						desiredData.member.push(worksheet[z].v);
