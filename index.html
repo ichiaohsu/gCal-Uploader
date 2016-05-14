@@ -505,22 +505,21 @@
 			      			desiredData.previousCell = z;
 			      		};//End of for loop
 
-			      		// If boundary still not set, use the last cell as lower boundary
-			      		if (!desiredData.isBoundarySet ){
-			      			desiredData.range.e.r = XLSX.utils.decode_cell(desiredData.previousCell).r;
-			      			desiredData.isBoundarySet = true;
+			    		// If boundary still not set, use the last cell as lower boundary
+			    		if (!desiredData.isBoundarySet ){
+			    			desiredData.range.e.r = XLSX.utils.decode_cell(desiredData.previousCell).r;
+			    			desiredData.isBoundarySet = true;
 
-			      			console.log(desiredData.range);
-			      		}
-			      		showMemberSelect(desiredData.member);
-			      	};// End of onload
+			    			console.log(desiredData.range);
+			    		}
+			    		showMemberSelect(desiredData.member);
+			    	};// End of onload
 
-			      	// Error handle
-			      	reader.onerror = function(e){
+			    	// Error handle
+			    	reader.onerror = function(e){
         				console.log(e);
-   					 };
-
-			      	reader.readAsBinaryString(f);
+					 };
+			    	reader.readAsBinaryString(f);
 			    }
 			    document.getElementById('list').innerHTML = '<ul>' + output.join('') + '</ul>';
 			}
@@ -537,10 +536,15 @@
 			}
 
 			function updateProgressBar(barObj,progress){
+				//$(barObj) = barObj;
 				console.log("update obj: " + barObj);
 				console.log("updateProgressBar: " + progress);
-				barObj.innerHTML = progress.toString()+"%";
-				barObj.style.width = progress.toString()+"%";
+				$(barObj).animate({
+    				width: progress.toString()+"%"
+				}, 500);
+				//barObj.setAttribute("aria-valuenow",progress.toString());
+				//barObj.innerHTML = progress.toString()+"%";
+				//barObj.style.width = progress.toString()+"%";
 			}
 
 			function handleDragOver(evt) {
@@ -613,7 +617,7 @@
 	</div>
 
 	<div class="progress" id="upload-progress" style="display:none">
-		<div class="progress-bar" role="progressbar" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">
+		<div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">
     		0%
   		</div>
 	</div>
