@@ -4,18 +4,18 @@
 		<!-- Latest compiled and minified CSS -->
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
 
-		<script   src="https://code.jquery.com/jquery-2.2.3.min.js"   integrity="sha256-a23g1Nt4dtEYOj7bR+vTu7+T8VP13humZFBJNIYoEJo="   crossorigin="anonymous"></script>
+		<script src="https://code.jquery.com/jquery-2.2.3.min.js"   integrity="sha256-a23g1Nt4dtEYOj7bR+vTu7+T8VP13humZFBJNIYoEJo="   crossorigin="anonymous"></script>
 
 		<!-- Latest compiled and minified JavaScript -->
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
-
+		<link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet" type="text/css">
 		<!-- SheetJS for parsing xls file -->
 		<script lang="javascript" src="js/xlsx.core.min.js"></script>
 		<script>
 			var auth2;
 			var googleUser;
 			var userNum;
-			
+
 			var params = {
 				client_id: "877919083410-kmf5737t33qkkrlo33ljlnho5ovl7r76.apps.googleusercontent.com",
 				scope: "profile https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/calendar",
@@ -30,14 +30,15 @@
 
 				'member':[],
 			};
-			
+
 			var worksheet;
 
 			var timearr = [];
+			var bCancelUpload = false;
 
 			function appStart(){
 				console.log("appStart");
-				
+
 				if (window.File && window.FileReader && window.FileList && window.Blob) {
   					// Great success! All the File APIs are supported.
   					console.log('support fileAPI');
@@ -46,7 +47,7 @@
 					dropZone.addEventListener('dragover', handleDragOver, false);
 		 			dropZone.addEventListener('drop', handleFileSelect, false);
 
-				} 
+				}
 				else {
   					alert('The File APIs are not fully supported in this browser.');
 				}
@@ -60,7 +61,7 @@
 
 					// Start Signing in procedure
 					auth2 = gapi.auth2.init(params);
-					
+
 					auth2.isSignedIn.listen(signinChanged);
 	  				auth2.currentUser.listen(userChanged);
 
@@ -69,17 +70,17 @@
 					}
 					else{
 						console.log("Not yet sign in");
-						
+
 						auth2.signIn().then(function() {
-			    			
+
 			    			googleUser = auth2.currentUser.get();
 			    			console.log(googleUser);
 							onSuccess(googleUser);
-			  				}, onFailure 
-		  				);	
+			  				}, onFailure
+		  				);
 		  			}
 					attachSignin(document.getElementById('signinBtn'));
-				});		
+				});
 			}
 
 			// Reaction when press sign in button
@@ -120,7 +121,7 @@
 
 			function onSuccess(user){
 				console.log("onSuccess");
-				
+
 				// Change userNum for usage in checkAuth
 				userNum = parseInt(user.hg.session_state.extraQueryParams.authuser);
 				console.log(userNum);
@@ -132,7 +133,7 @@
 			}
 
 			function signOut(){
-				
+
 				auth2 = gapi.auth2.getAuthInstance();
 				auth2.disconnect();
 				console.log("authorized scopes:" + auth2.currentUser.get().getGrantedScopes());
@@ -159,7 +160,7 @@
 				if (!result || result.error || !googleUser.hasGrantedScopes('email https://www.googleapis.com/auth/calendar') ){
 				// Fail case
 					console.log("result false");
-					
+
 					var options = new gapi.auth2.SigninOptionsBuilder(
 			        {'scope': 'email https://www.googleapis.com/auth/calendar',
 			    	 'prompt': 'select_account consent',
@@ -169,7 +170,7 @@
 
 					googleUser = auth2.currentUser.get();
 					googleUser.grant(options).then(
-			    	
+
 			    	function(success){
 			    		console.log("Success");
 			     		console.log(JSON.stringify({message: "success", value: success}));
@@ -192,7 +193,10 @@
 					client_id: "877919083410-kmf5737t33qkkrlo33ljlnho5ovl7r76.apps.googleusercontent.com",
 					scope: "email https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/userinfo.email",
 					immediate: false,
-					authuser: userNum}, authResultHandle);
+					authuser: userNum}, authResultHandle
+				);
+
+				document.getElementById("cancel").style.display = "inline-block";
 			}
 
 
@@ -246,7 +250,7 @@
 				console.log("getInsertData");
 				var mth = document.getElementById("month");
 				var mber = document.getElementById("member");
-				
+
 				var selectMonth = mth.options[mth.selectedIndex].value;
 				var selectMember = mber.options[mber.selectedIndex].value;
 				timearr.push(selectMonth);
@@ -265,7 +269,7 @@
   						if (typeof worksheet[encode_address] != "undefined"){
   							//("0" + daycount).slice(-2)
   							if (worksheet[encode_address].v === selectMember){
-  								
+
   								// Use local object to avoid day incorrectness.
   								// Declare as global would cause this incorrectness.
   								var radioevent = {
@@ -282,7 +286,7 @@
   								console.log("cell: " + encode_address);
 
   								timearr[2] = formatDay(day);
-  								
+
   								switch(cell_address.c){
   									case 2:
   									case 3:
@@ -301,7 +305,7 @@
   									case 8:
   										radioevent.summary = "QC_L";
   										radioevent.start.dateTime = timearr.join('-') + "T19:00:00";
-  										
+
   										timearr[2] = formatDay(day+1);
   										console.log(timearr);
   										timearr = checkDate(timearr);
@@ -312,7 +316,7 @@
   									case 9:
   										radioevent.summary = "QC_G";
   										radioevent.start.dateTime = timearr.join('-') + "T19:00:00";
-  										
+
   										timearr[2] = formatDay(day+1);
   										console.log(timearr);
   										timearr = checkDate(timearr);
@@ -323,7 +327,7 @@
   								console.log(radioevent);
 
   								eventarr.push(radioevent);
-  								
+
   							}// End ** if (worksheet[encode_address].v === selectMember)
   						}// End ** if (typeof worksheet[encode_address] != "undefined")
   					}
@@ -332,30 +336,39 @@
 				insertEvent(eventarr);
 			}// End ** function insertEvent
 
+			function cancelUpload(){
+				bCancelUpload = true;
+			}
+
 			function insertEvent(eventlist){
 
 				console.log(eventlist);
 				console.log("insertEvent: " + eventlist.length);
-				
+
 				var i = 0;
 				var nInterId;
 				var insertResult;
 				var resultarr = [];
 				nInterId = setInterval(function(){
 
-					if (i < eventlist.length){
+					if (i < eventlist.length && !bCancelUpload){
 						insertResult = insertRequest(eventlist[i],1000,3,i);
 						console.log("insertResult: " + insertResult + ", type: " + typeof insertResult);
-						resultarr[i] = insertResult; 
+						resultarr[i] = insertResult;
 						i++;
 
 					}
 					else{
 						clearInterval(nInterId);
+
+						if (bCancelUpload){
+							console.log("User cancel the upload");
+						}
+
 						console.log(resultarr);
 						console.log("clearInterval");
 					}
-				}, 3000);	
+				}, 3000);
 			}
 
 			function insertRequest(singleEvent,delay,retry,eventnum){
@@ -378,9 +391,9 @@
 				intervalId = setInterval(function(){
 					if (typeof resultStatus != "undefined"){
 						clearInterval(intervalId);
-						
+
 						if (resultStatus != "confirmed"){
-							
+
 							if (retry > 0){
 								delay *= 2;
 								retry -= 1;
@@ -412,17 +425,17 @@
 				evt.preventDefault();
 
 			    var files = evt.dataTransfer.files; // FileList object.
-				
+
 			    // files is a FileList of File objects. List some properties.
 			    var output = [];
 			    var i,f;
 			    for (i = 0, f = files[i]; i != files.length; ++i) {
-			      
+
 			      	var reader = new FileReader();
 			      	var name = f.name;
 			      	// Show file names for user
 			    	output.push('<strong>', escape(name), '</strong> ', ' - ', f.size, ' bytes');
-			      
+
 			      	reader.onload = function(e){
 			      		var data = e.target.result;
 			      		//console.log(data);
@@ -430,7 +443,7 @@
 
 			      		var firstsheet = workbook.SheetNames[0];
 			      		worksheet = workbook.Sheets[firstsheet];
-			      		
+
 			      		//console.log(worksheet);
 			      		for (z in worksheet){
 			      			var z_addr = XLSX.utils.decode_cell(z);
@@ -442,9 +455,9 @@
 			      				console.log('first column');
 			      				// Use column A to set up starting row and ending column
 			      				if(desiredData.previousCell.length != 0 && worksheet[desiredData.previousCell].v == '小夜' && worksheet[z].v == '1'){
-			      					
+
 			      					desiredData.range.e.c = XLSX.utils.decode_cell(desiredData.previousCell).c;
-			      					desiredData.range.s.r = z_addr.r;	
+			      					desiredData.range.s.r = z_addr.r;
 			      					desiredData.isStartingSet = true;
 			      				}
 
@@ -492,15 +505,15 @@
 			      		}
 			      		showMemberSelect(desiredData.member);
 			      	};// End of onload
-			      	
+
 			      	// Error handle
 			      	reader.onerror = function(e){
         				console.log(e);
    					 };
-			      	
+
 			      	reader.readAsBinaryString(f);
 			    }
-			    document.getElementById('list').innerHTML = '<ul>' + output.join('') + '</ul>';   
+			    document.getElementById('list').innerHTML = '<ul>' + output.join('') + '</ul>';
 			}
 
 			function showMemberSelect(member){
@@ -510,8 +523,8 @@
 				for (var i = 0; i < member.length ; i ++){
 					select.options[select.options.length] = new Option(member[i], member[i]);
 				}
-				document.getElementById("member-container").style.display = "inline-block";
-				document.getElementById("insert").removeAttribute("disabled");
+				document.getElementById("select-member").style.display = "inline-block";
+				document.getElementById("insert").style.display = "inline-block";
 			}
 
 			function handleDragOver(evt) {
@@ -525,15 +538,16 @@
 		<script src="https://apis.google.com/js/client.js?onload=appStart"></script>
 		<link href="main.css" rel="stylesheet"/>
 	</head>
-	
+
 	<body>
-	
+
 	<div class="fluid-container" id="header">
-		
+
 		<div id='name'></div>
-		
+
 		<div id = "button-zone">
 			<div id="signinBtn">
+				<span class="icon"></span>
 				<span class="buttonText">Google</span>
 			</div>
 
@@ -546,11 +560,11 @@
 	<div id="drop-zone">Drop files here
 		<output id="list"></output>
 	</div>
-	
+
 	<div class="fluid-container">
 		<!-- Maybe need to use the same container to host both month and member select,
 			 then use create node function in JavaScript -->
-		<div id="month-container">
+		<div class="select-block" id="select-month">
 			<label for="month">Select a month :</label>
 			<div class="selector-container">
 				<select class="form-control" id="month">
@@ -570,14 +584,15 @@
 			</div>
 		</div>
 
-		<div id= "member-container" style="display:none">
+		<div class="select-block" id= "select-member" style="display:none">
 			<label for="member">Select a member :</label>
 			<div class="selector-container">
 				<select class="form-control" id="member" required></select>
-			</div>	
+			</div>
 		</div>
 
-		<button id="insert" onclick='checkAuth()' class="btn btn-primary" disabled>Insert</button>
+		<button id="insert" onclick='checkAuth()' class="btn btn-primary" style="display:inline-block">Insert</button>
+		<button id="cancel" onclick="cancelUpload()" class="btn btn-danger" style="display:inline-block">Cancel</button>
 	</div>
 
 	</body>
