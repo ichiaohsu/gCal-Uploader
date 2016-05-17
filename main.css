@@ -44,19 +44,18 @@
 }
 
 #drop-zone{
-	margin-left: 10%;
-	margin-right: 10%;
-	margin-top: 30px;
-	margin-bottom: 30px;
+	margin: 30px;
 	font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif;
 	font-size: 26px;
 	color: #BBB;
 	padding: 25px;
-	width: 80%;
-	height: 60%;
+	width: 60%;
+	height: 40%;
 	border: 2px dashed #BBB;
 	border-radius: 5px;
 	text-align: center;
+	position: absolut;
+	right: 50px;
 }
 
 .selector-container{

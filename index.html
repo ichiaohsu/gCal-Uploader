@@ -547,7 +547,7 @@
 					$('<option/>', { value : member[i] }).text(member[i]).appendTo("#member");
 					//select.options[select.options.length] = new Option(member[i], member[i]);
 				}
-				$("#select-member").css({"display": "inline-block"}) ;
+				$("#select-member").css({"visibility": "visible"}) ;
 				$("#insert").css({"display": "inline-block"});;
 			}
 
@@ -592,10 +592,6 @@
 		</div>
 	</div>
 
-	<div id="drop-zone">Drop files here
-		<output id="list"></output>
-	</div>
-
 	<div class="fluid-container">
 		<!-- Maybe need to use the same container to host both month and member select,
 			 then use create node function in JavaScript -->
@@ -619,15 +615,19 @@
 			</div>
 		</div>
 
-		<div class="select-block" id= "select-member" style="display:none">
+		<div class="select-block" id= "select-member" style="visibility:hidden">
 			<label for="member">Select a member :</label>
 			<div class="selector-container">
 				<select class="form-control" id="member" required></select>
 			</div>
 		</div>
 
-		<button id="insert" onclick='checkAuth()' class="btn btn-primary" style="display:inline-block">Insert</button>
-		<button id="cancel" onclick="cancelUpload()" class="btn btn-danger" style="display:inline-block">Cancel</button>
+		<button id="insert" onclick='checkAuth()' class="btn btn-primary" style="display:none">Insert</button>
+		<button id="cancel" onclick="cancelUpload()" class="btn btn-danger" style="display:none">Cancel</button>
+	</div>
+
+	<div id="drop-zone">Drop files here
+		<output id="list"></output>
 	</div>
 
 	<div class="progress" id="upload-progress" style="display:none">
