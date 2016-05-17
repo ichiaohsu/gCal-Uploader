@@ -43,28 +43,36 @@
   	white-space: nowrap;
 }
 
+#select-zone{
+	width: 200px;
+	height: 500px;
+	display:inline-block;
+}
+
 #drop-zone{
 	margin: 30px;
 	font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif;
 	font-size: 26px;
 	color: #BBB;
 	padding: 25px;
-	width: 60%;
-	height: 40%;
+	width: 600px;
+	height: 400px;
 	border: 2px dashed #BBB;
 	border-radius: 5px;
 	text-align: center;
-	position: absolut;
+	position: absolute;
 	right: 50px;
+	display:inline-block;
 }
 
 .selector-container{
-	width: 65px;
+	width: 80px;
 	margin: 5px;
 }
 
 .select-block{
-	margin: 30px;
+	width: 125px;
+	margin: 50px 30px 20px 50px;
 	display:inline-block;
 }
 
