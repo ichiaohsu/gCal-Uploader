@@ -200,8 +200,6 @@
 					immediate: false,
 					authuser: userNum}, authResultHandle
 				);
-
-				$("#cancel").css({"display":"inline-block"});
 			}
 
 
@@ -355,8 +353,9 @@
 				console.log("insertEvent: " + eventlist.length);
 				// Start uploading, show progress bar
 				//document.getElementById("upload-progress").style.display = "block";
+				$("#cancel").css({"display":"inline-block"});
 				$("#upload-progress").css({"display": "block"});
-
+				
 				var i = 0;
 				var nInterId;
 				var insertResult;
