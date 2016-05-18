@@ -82,7 +82,7 @@
 							}, onFailure
 						);
 					}
-					attachSignin(document.getElementById('signinBtn'));
+					attachSignin(document.getElementById('normalBtn'));
 				});
 			}
 
@@ -276,7 +276,6 @@
 						if (typeof worksheet[encode_address] != "undefined"){
 							//("0" + daycount).slice(-2)
 							if (worksheet[encode_address].v === selectMember){
-
 								// Use local object to avoid day incorrectness.
 								// Declare as global would cause this incorrectness.
 								var radioevent = {
@@ -353,9 +352,10 @@
 				console.log("insertEvent: " + eventlist.length);
 				// Start uploading, show progress bar
 				//document.getElementById("upload-progress").style.display = "block";
-				$("#cancel").css({"display":"inline-block"});
+
+				$("#cancel").css({"visibility":"visible"});
 				$("#upload-progress").css({"display": "block"});
-				
+
 				var i = 0;
 				var nInterId;
 				var insertResult;
@@ -546,8 +546,8 @@
 					$('<option/>', { value : member[i] }).text(member[i]).appendTo("#member");
 					//select.options[select.options.length] = new Option(member[i], member[i]);
 				}
-				$("#select-member").css({"display": "inline-block"}) ;
-				$("#insert").css({"display": "inline-block"});;
+				$("#select-member").css({"visibility": "visible"}) ;
+				$("#insert").css({"visibility": "visible"});;
 			}
 
 			function updateProgressBar(barObj,progress){
@@ -577,56 +577,81 @@
 
 	<div class="fluid-container" id="header">
 
-		<div id='name'></div>
-
-		<div id = "button-zone">
-			<div id="signinBtn">
-				<span class="icon"></span>
-				<span class="buttonText">Google</span>
+		<div id="instruction">
+			<div class="ins-block" id="ins-text">
+				Instruction Text
 			</div>
 
-			<div id="signoutBtn" onclick="signOut()">
-				<span class="buttonText">Sign out</span>
+			<div class="ins-block" id="ins-bar">
+				<div class="progress" id="act-progress">
+					<div class="progress-bar progress-bar-info" id="act-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="min-width: 2em">
+			    		0%
+					</div>
+				</div>
 			</div>
+		</div>
+
+		<div id="login">
+			<div id='name'>
+			</div>
+
+			<div id = "button-zone">
+				<img src="google_signin_dark_normal.png" id="normalBtn">
+
+				<!--
+				<div id="signinBtn">
+					<span class="icon"></span>
+					<span id="signinText">Sign in with Google</span>
+				</div>
+				-->
+				<div id="signoutBtn" onclick="signOut()">
+					<span id="signoutText">Sign out</span>
+				</div>
+			</div>
+
 		</div>
 	</div>
 
-	<div id="drop-zone">Drop files here
-		<output id="list"></output>
-	</div>
+	<div class="fluid-container" id="main">
+		<div id="select-zone">
+			<!-- Maybe need to use the same container to host both month and member select,
+				 then use create node function in JavaScript -->
+			<div class="select-block" id="select-month">
+				<label for="month">Select a month :</label>
+				<div class="selector-container">
+					<select class="form-control" id="month">
+						<option value="01">Jan</option>
+						<option value="02">Feb</option>
+						<option value="03">Mar</option>
+						<option value="04">Apr</option>
+						<option value="05">May</option>
+						<option value="06">Jun</option>
+						<option value="07">Jul</option>
+						<option value="08">Aug</option>
+						<option value="09">Sep</option>
+						<option value="10">Oct</option>
+						<option value="11">Nov</option>
+						<option value="12">Dec</option>
+					</select>
+				</div>
+			</div>
 
-	<div class="fluid-container">
-		<!-- Maybe need to use the same container to host both month and member select,
-			 then use create node function in JavaScript -->
-		<div class="select-block" id="select-month">
-			<label for="month">Select a month :</label>
-			<div class="selector-container">
-				<select class="form-control" id="month">
-					<option value="01">Jan</option>
-					<option value="02">Feb</option>
-					<option value="03">Mar</option>
-					<option value="04">Apr</option>
-					<option value="05">May</option>
-					<option value="06">Jun</option>
-					<option value="07">Jul</option>
-					<option value="08">Aug</option>
-					<option value="09">Sep</option>
-					<option value="10">Oct</option>
-					<option value="11">Nov</option>
-					<option value="12">Dec</option>
-				</select>
+			<div class="select-block" id= "select-member" style="visibility:hidden">
+				<label for="member">Select a member :</label>
+				<div class="selector-container">
+					<select class="form-control" id="member" required></select>
+				</div>
+			</div>
+
+			<div id="insert-control">
+				<button id="insert" onclick="checkAuth()" class="btn btn-primary" style="visibility:hidden">Insert</button>
+				<button id="cancel" onclick="cancelUpload()" class="btn btn-danger" style="visibility:hidden">Cancel</button>
 			</div>
 		</div>
 
-		<div class="select-block" id= "select-member" style="display:none">
-			<label for="member">Select a member :</label>
-			<div class="selector-container">
-				<select class="form-control" id="member" required></select>
-			</div>
+		<div id="drop-zone">Drop files here
+			<output id="list"></output>
 		</div>
-
-		<button id="insert" onclick='checkAuth()' class="btn btn-primary" style="display:inline-block">Insert</button>
-		<button id="cancel" onclick="cancelUpload()" class="btn btn-danger" style="display:inline-block">Cancel</button>
 	</div>
 
 	<div class="progress" id="upload-progress" style="display:none">
