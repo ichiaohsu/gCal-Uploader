@@ -1,6 +1,6 @@
 #header{
 	height: 20%;
-	background-color: #000;
+	background-color: #9c9191;
 	padding: 5px;
 }
 #instruction{
@@ -29,7 +29,7 @@
 
 	margin-top: 15px;
 	margin-bottom: 5px;
-	color: #999;
+	color: #453f3f;
 	font-size: 20px;
 }
 
@@ -41,40 +41,91 @@
 	/*background-color: #FFF;*/
 
 	position: absolute;
-	right: 10px
+	top: 45px;
+	right: 10px;
 	bottom: 10px;
+}
+img#normalBtn{
+	display: inline-block;
+	width: 191px;
+	height:46px;
 }
 
 #signinBtn {
+
+	display: inline-block;
+	background: white;
+	color: #444;
+	width: 190px;
+	border-radius: 5px;
+	border: thin solid #888;
+	box-shadow: 1px 1px 1px grey;
+	white-space: nowrap;
+  /*
   display: inline-block;
   background: white;
   color: #444;
-  width: 90px;
+  width: 170px;
   height: 40px;
-  border-radius: 5px;
+  border-radius: 2px;
   border: 1px solid #999;
   box-shadow: 1px 1px 1px grey;
   white-space: nowrap;
+
+  position: relative;
+  line-height: 40px;
+  */
 }
 
 .icon{
 	background: url('google-icon.svg') transparent 5px 50% no-repeat;
 	display: inline-block;
 	vertical-align: middle;
+	width: 42px;
+	height: 42px;
+	/*
+	background: url('google-icon.svg') transparent 5px 50% no-repeat;
+	display: inline-block;
+	vertical-align: middle;
 	width: 36px;
 	height: 36px;
+	margin-top:1px;
+	position:absolute;
+	left:-8px;
+	*/
+}
+#signinText{
+	display: inline-block;
+	vertical-align: middle;
+	padding-left: 42px;
+	padding-right: 42px;
+	font-size: 14px;
+	font-weight: bold;
+	/* Use the Roboto font that is loaded in the <head> */
+	font-family: 'Roboto', sans-serif;
+	/*
+	position:absolute;
+	right: 10px;*/
 }
 
 #signoutBtn{
+	margin-left: 5px;
 	display: inline-block;
 	background: white;
 	color: #222;
 	width: 80px;
-	height:40px;
-	border-radius: 5px;
-  	border: thin solid #888;
-  	box-shadow: 1px 1px 1px grey;
-  	white-space: nowrap;
+	height:42px;
+	border-radius: 2.5px;
+	border: 1px solid #999;
+	box-shadow: 1px 1px 1px grey;
+	white-space: nowrap;
+
+
+	position:relative;
+	top: 1px;
+	right: 0px;
+	text-align: center;
+	line-height: 40px;
 }
 
 #select-zone{

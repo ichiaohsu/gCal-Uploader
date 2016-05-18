@@ -82,7 +82,7 @@
 							}, onFailure
 						);
 					}
-					attachSignin(document.getElementById('signinBtn'));
+					attachSignin(document.getElementById('normalBtn'));
 				});
 			}
 
@@ -588,16 +588,19 @@
 			</div>
 
 			<div id = "button-zone">
+				<img src="google_signin_dark_normal.png" id="normalBtn">
+
+				<!--
 				<div id="signinBtn">
 					<span class="icon"></span>
-					<span class="buttonText">Google</span>
+					<span id="signinText">Sign in with Google</span>
 				</div>
-
+				-->
 				<div id="signoutBtn" onclick="signOut()">
-					<span class="buttonText">Sign out</span>
+					<span id="signoutText">Sign out</span>
 				</div>
 			</div>
-			
+
 		</div>
 	</div>
 
