@@ -1,7 +1,7 @@
 #header{
 	height: 20%;
 	background-color: #9c9191;
-	padding: 5px;
+	/*padding: 5px;*/
 }
 #instruction{
 	width: 49%;
@@ -10,11 +10,20 @@
 	display: inline-block;
 	vertical-align: top;
 }
+.ins-block{
+	max-width: 90%;
+	height: 50%;
+	line-height: 60px;
+	margin-left: 20px;
+	margin-right: 0px;
+}
+#ins-bar{
+	padding-top: 18px;
+}
 
 #login{
 	width: 49%;
 	height:120px;
-	/*background-color: #C3F6A7;*/
 	display: inline-block;
 	vertical-align: top;
 
@@ -109,6 +118,7 @@ img#normalBtn{
 }
 
 #signoutBtn{
+	visibility: hidden;
 	margin-left: 5px;
 	display: inline-block;
 	background: white;
@@ -126,6 +136,8 @@ img#normalBtn{
 	right: 0px;
 	text-align: center;
 	line-height: 40px;
+	font-family: 'Roboto', sans-serif;
+	font-weight: bolder;
 }
 
 #select-zone{
@@ -174,6 +186,9 @@ img#normalBtn{
 
 #insert-control #insert{
 	margin-right: 10px;
+}
+#inser-control button{
+	margin-right: 50px;
 }
 
 #upload-progress{
