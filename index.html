@@ -201,7 +201,7 @@
 					authuser: userNum}, authResultHandle
 				);
 
-				$("#cancel").css({"display":"inline-block"});
+				//$("#cancel").css({"visibility":"visible"});
 			}
 
 
@@ -355,6 +355,7 @@
 				console.log("insertEvent: " + eventlist.length);
 				// Start uploading, show progress bar
 				//document.getElementById("upload-progress").style.display = "block";
+				$("#cancel").css({"visibility":"visible"});
 				$("#upload-progress").css({"display": "block"});
 
 				var i = 0;
@@ -548,7 +549,7 @@
 					//select.options[select.options.length] = new Option(member[i], member[i]);
 				}
 				$("#select-member").css({"visibility": "visible"}) ;
-				$("#insert").css({"display": "inline-block"});;
+				$("#insert").css({"visibility": "visible"});;
 			}
 
 			function updateProgressBar(barObj,progress){
@@ -578,56 +579,68 @@
 
 	<div class="fluid-container" id="header">
 
-		<div id='name'></div>
+		<div id="instruction">
+			Instruction
+		</div>
 
-		<div id = "button-zone">
-			<div id="signinBtn">
-				<span class="icon"></span>
-				<span class="buttonText">Google</span>
+		<div id="login">
+			<div id='name'>
 			</div>
 
-			<div id="signoutBtn" onclick="signOut()">
-				<span class="buttonText">Sign out</span>
+			<div id = "button-zone">
+				<div id="signinBtn">
+					<span class="icon"></span>
+					<span class="buttonText">Google</span>
+				</div>
+
+				<div id="signoutBtn" onclick="signOut()">
+					<span class="buttonText">Sign out</span>
+				</div>
 			</div>
+			
 		</div>
 	</div>
 
-	<div id="select-zone">
-		<!-- Maybe need to use the same container to host both month and member select,
-			 then use create node function in JavaScript -->
-		<div class="select-block" id="select-month">
-			<label for="month">Select a month :</label>
-			<div class="selector-container">
-				<select class="form-control" id="month">
-					<option value="01">Jan</option>
-					<option value="02">Feb</option>
-					<option value="03">Mar</option>
-					<option value="04">Apr</option>
-					<option value="05">May</option>
-					<option value="06">Jun</option>
-					<option value="07">Jul</option>
-					<option value="08">Aug</option>
-					<option value="09">Sep</option>
-					<option value="10">Oct</option>
-					<option value="11">Nov</option>
-					<option value="12">Dec</option>
-				</select>
+	<div class="fluid-container" id="main">
+		<div id="select-zone">
+			<!-- Maybe need to use the same container to host both month and member select,
+				 then use create node function in JavaScript -->
+			<div class="select-block" id="select-month">
+				<label for="month">Select a month :</label>
+				<div class="selector-container">
+					<select class="form-control" id="month">
+						<option value="01">Jan</option>
+						<option value="02">Feb</option>
+						<option value="03">Mar</option>
+						<option value="04">Apr</option>
+						<option value="05">May</option>
+						<option value="06">Jun</option>
+						<option value="07">Jul</option>
+						<option value="08">Aug</option>
+						<option value="09">Sep</option>
+						<option value="10">Oct</option>
+						<option value="11">Nov</option>
+						<option value="12">Dec</option>
+					</select>
+				</div>
+			</div>
+
+			<div class="select-block" id= "select-member" style="visibility:hidden">
+				<label for="member">Select a member :</label>
+				<div class="selector-container">
+					<select class="form-control" id="member" required></select>
+				</div>
+			</div>
+
+			<div id="insert-control">
+				<button id="insert" onclick='checkAuth()' class="btn btn-primary" style="visibility:hidden">Insert</button>
+				<button id="cancel" onclick="cancelUpload()" class="btn btn-danger" style="visibility:hidden">Cancel</button>
 			</div>
 		</div>
 
-		<div class="select-block" id= "select-member" style="visibility:hidden">
-			<label for="member">Select a member :</label>
-			<div class="selector-container">
-				<select class="form-control" id="member" required></select>
-			</div>
+		<div id="drop-zone">Drop files here
+			<output id="list"></output>
 		</div>
-
-		<button id="insert" onclick='checkAuth()' class="btn btn-primary" style="display:none">Insert</button>
-		<button id="cancel" onclick="cancelUpload()" class="btn btn-danger" style="display:none">Cancel</button>
-	</div>
-
-	<div id="drop-zone">Drop files here
-		<output id="list"></output>
 	</div>
 
 	<div class="progress" id="upload-progress" style="display:none">
