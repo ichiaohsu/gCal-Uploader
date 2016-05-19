@@ -538,8 +538,9 @@
 					$('<option/>', { value : member[i] }).text(member[i]).appendTo("#member");
 					//select.options[select.options.length] = new Option(member[i], member[i]);
 				}
-				$("#select-member").css({"visibility": "visible"}) ;
-				$("#insert").css({"visibility": "visible"});;
+				$("#select-month").css({"visibility": "visible"}) ;
+				$("#select-member").css({"visibility": "visible"});
+				$("#insert").css({"visibility": "visible"});
 			}
 
 			function updateProgressBar(barObj,progress){
@@ -608,7 +609,7 @@
 		<div id="select-zone">
 			<!-- Maybe need to use the same container to host both month and member select,
 				 then use create node function in JavaScript -->
-			<div class="select-block" id="select-month">
+			<div class="select-block" id="select-month" style="visibility:hidden">
 				<label for="month">Select a month :</label>
 				<div class="selector-container">
 					<select class="form-control" id="month">
