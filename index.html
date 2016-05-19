@@ -33,6 +33,8 @@
 				'member':[],
 			};
 
+			var memberData = {};
+
 			var worksheet;
 
 			var timearr = [];
@@ -264,6 +266,7 @@
 				var selectMember = $("#member").val();
 				timearr.push(selectMonth);
 				console.log(timearr);
+				console.log(memberData[selectMember]);
 				var day = 1;
 				var eventarr=[];
 				/*
@@ -354,7 +357,6 @@
 				console.log("insertEvent: " + eventlist.length);
 				// Start uploading, show progress bar
 				//document.getElementById("upload-progress").style.display = "block";
-
 				$("#cancel").css({"visibility":"visible"});
 				$("#upload-progress").css({"display": "block"});
 
@@ -510,7 +512,11 @@
 				    					if (desiredData.member.indexOf(worksheet[z].v) < 0){
 				    						console.log(z + " member not in member-array: " + desiredData.member);
 				    						desiredData.member.push(worksheet[z].v);
+											// member didn't show before. New a key/array pair for member cell
+											memberData[worksheet[z].v] = new Array();
 				    					}
+										memberData[worksheet[z].v].push(z);
+										console.log(memberData);
 				    				}
 			    				}
 			    			}
@@ -651,7 +657,7 @@
 			</div>
 		</div>
 
-		<div id="drop-zone">Drop files here
+		<div id="drop-zone">Drop a file here
 			<output id="list"></output>
 		</div>
 	</div>
