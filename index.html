@@ -115,11 +115,13 @@
 				console.log("sign in state change to: " + val);
 				if (!val){
 					$("#signoutBtn").css({"visibility": "hidden"});
-					$("#name").css({"visibility": "hidden"})	;
+					$("#name").css({"visibility": "hidden"});
+					$("#normalBtn").attr("src","/assets/google_signin_light_normal.png");
 				}
 				else{
 					$("#signoutBtn").css({"visibility": "visible"});
 					$("#name").css({"visibility": "visible"});
+					$("#normalBtn").attr("src","/assets/google_signin_dark_normal.png");
 				}
 			}
 
@@ -596,7 +598,7 @@
 			</div>
 
 			<div id = "button-zone">
-				<img src="google_signin_dark_normal.png" id="normalBtn">
+				<img src="/assets/google_signin_light_normal.png" id="normalBtn">
 
 				<!--
 				<div id="signinBtn">
