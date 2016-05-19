@@ -255,94 +255,78 @@
 			function getInsertData(){
 
 				console.log("getInsertData");
-				/*
-				var mth = document.getElementById("month");
-				var mber = document.getElementById("member");
 
-				var selectMonth = mth.options[mth.selectedIndex].value;
-				var selectMember = mber.options[mber.selectedIndex].value;
-				*/
 				var selectMonth = $("#month").val();
 				var selectMember = $("#member").val();
 				timearr.push(selectMonth);
 				console.log(timearr);
-				console.log(memberData[selectMember]);
-				var day = 1;
 				var eventarr=[];
-				/*
-				 * Extract data and form event object
-				 */
-				for(var R = desiredData.range.s.r; R <= desiredData.range.e.r; ++R) {
-					for(var C = desiredData.range.s.c; C <= desiredData.range.e.c; ++C) {
 
-    					var cell_address = {c:C, r:R};
-    					var encode_address = XLSX.utils.encode_cell(cell_address);
-						console.log("encode_address: " + encode_address);
-						if (typeof worksheet[encode_address] != "undefined"){
-							//("0" + daycount).slice(-2)
-							if (worksheet[encode_address].v === selectMember){
-								// Use local object to avoid day incorrectness.
-								// Declare as global would cause this incorrectness.
-								var radioevent = {
-									'summary': '',
-									'start':{
-										'dateTime': '',
-										'timeZone': 'Asia/Taipei'
-									},
-									'end':{
-										'dateTime': '',
-										'timeZone': 'Asia/Taipei'
-									}
-								};
-								console.log("cell: " + encode_address);
+				var cellData = memberData[selectMember];
 
-								timearr[2] = formatDay(day);
+				for (var i = 0; i < cellData.length; i++){
+					var decode_address = XLSX.utils.decode_cell(cellData[i]);
+					//console.log(decode_address);
+					var day = decode_address.r - desiredData.range.s.r + 1;
+					//console.log("day: " + day);
 
-								switch(cell_address.c){
-									case 2:
-									case 3:
-									case 4:
-										radioevent.summary = 'QC';
-										radioevent.start.dateTime = timearr.join('-') + "T07:00:00";
-										radioevent.end.dateTime = timearr.join('-') + "T13:00:00";
-										break;
-									case 5:
-									case 6:
-									case 7:
-										radioevent.summary = "QC";
-										radioevent.start.dateTime = timearr.join('-') + "T13:00:00";
-										radioevent.end.dateTime = timearr.join('-') + "T19:00:00";
-										break;
-									case 8:
-										radioevent.summary = "QC_L";
-										radioevent.start.dateTime = timearr.join('-') + "T19:00:00";
+					timearr[2] = formatDay(day);
 
-										timearr[2] = formatDay(day+1);
-										console.log(timearr);
-										timearr = checkDate(timearr);
-										console.log(timearr);
-										radioevent.end.dateTime = timearr.join('-') + "T07:00:00";
-										break;
+					var radioevent = {
+						'summary': '',
+						'start':{
+							'dateTime': '',
+							'timeZone': 'Asia/Taipei'
+						},
+						'end':{
+							'dateTime': '',
+							'timeZone': 'Asia/Taipei'
+						}
+					};
 
-									case 9:
-										radioevent.summary = "QC_G";
-										radioevent.start.dateTime = timearr.join('-') + "T19:00:00";
+					/*
+					 * form event object
+					 */
+					switch(decode_address.c){
+						case 2:
+						case 3:
+						case 4:
+							radioevent.summary = 'QC';
+							radioevent.start.dateTime = timearr.join('-') + "T07:00:00";
+							radioevent.end.dateTime = timearr.join('-') + "T13:00:00";
+							break;
+						case 5:
+						case 6:
+						case 7:
+							radioevent.summary = "QC";
+							radioevent.start.dateTime = timearr.join('-') + "T13:00:00";
+							radioevent.end.dateTime = timearr.join('-') + "T19:00:00";
+							break;
+						case 8:
+							radioevent.summary = "QC_L";
+							radioevent.start.dateTime = timearr.join('-') + "T19:00:00";
 
-										timearr[2] = formatDay(day+1);
-										console.log(timearr);
-										timearr = checkDate(timearr);
-										console.log(timearr);
-										radioevent.end.dateTime = timearr.join('-') + "T07:00:00";
-										break;
-								}//End of switch
-								console.log(radioevent);
+							timearr[2] = formatDay(day+1);
+							console.log(timearr);
+							timearr = checkDate(timearr);
+							console.log(timearr);
+							radioevent.end.dateTime = timearr.join('-') + "T07:00:00";
+							break;
 
-								eventarr.push(radioevent);
+						case 9:
+							radioevent.summary = "QC_G";
+							radioevent.start.dateTime = timearr.join('-') + "T19:00:00";
 
-							}// End ** if (worksheet[encode_address].v === selectMember)
-						}// End ** if (typeof worksheet[encode_address] != "undefined")
-					}
-					day++;
+							timearr[2] = formatDay(day+1);
+							console.log(timearr);
+							timearr = checkDate(timearr);
+							console.log(timearr);
+							radioevent.end.dateTime = timearr.join('-') + "T07:00:00";
+							break;
+					}//End of switch
+					console.log(radioevent);
+
+					eventarr.push(radioevent);
 				}// End of for loop
 				insertEvent(eventarr);
 			}// End ** function insertEvent
