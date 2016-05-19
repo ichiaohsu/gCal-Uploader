@@ -262,73 +262,78 @@
 				console.log(timearr);
 				var eventarr=[];
 
-				var cellData = memberData[selectMember];
+				if (memberData[selectMember] === "undefined"){
+					alert("Member selection error");
+				}
+				else{
+					var cellData = memberData[selectMember];
 
-				for (var i = 0; i < cellData.length; i++){
-					var decode_address = XLSX.utils.decode_cell(cellData[i]);
-					//console.log(decode_address);
-					var day = decode_address.r - desiredData.range.s.r + 1;
-					//console.log("day: " + day);
+					for (var i = 0; i < cellData.length; i++){
+						var decode_address = XLSX.utils.decode_cell(cellData[i]);
+						//console.log(decode_address);
+						var day = decode_address.r - desiredData.range.s.r + 1;
+						//console.log("day: " + day);
 
-					timearr[2] = formatDay(day);
+						timearr[2] = formatDay(day);
 
-					var radioevent = {
-						'summary': '',
-						'start':{
-							'dateTime': '',
-							'timeZone': 'Asia/Taipei'
-						},
-						'end':{
-							'dateTime': '',
-							'timeZone': 'Asia/Taipei'
-						}
-					};
+						var radioevent = {
+							'summary': '',
+							'start':{
+								'dateTime': '',
+								'timeZone': 'Asia/Taipei'
+							},
+							'end':{
+								'dateTime': '',
+								'timeZone': 'Asia/Taipei'
+							}
+						};
 
-					/*
-					 * form event object
-					 */
-					switch(decode_address.c){
-						case 2:
-						case 3:
-						case 4:
-							radioevent.summary = 'QC';
-							radioevent.start.dateTime = timearr.join('-') + "T07:00:00";
-							radioevent.end.dateTime = timearr.join('-') + "T13:00:00";
-							break;
-						case 5:
-						case 6:
-						case 7:
-							radioevent.summary = "QC";
-							radioevent.start.dateTime = timearr.join('-') + "T13:00:00";
-							radioevent.end.dateTime = timearr.join('-') + "T19:00:00";
-							break;
-						case 8:
-							radioevent.summary = "QC_L";
-							radioevent.start.dateTime = timearr.join('-') + "T19:00:00";
+						/*
+						 * form event object
+						 */
+						switch(decode_address.c){
+							case 2:
+							case 3:
+							case 4:
+								radioevent.summary = 'QC';
+								radioevent.start.dateTime = timearr.join('-') + "T07:00:00";
+								radioevent.end.dateTime = timearr.join('-') + "T13:00:00";
+								break;
+							case 5:
+							case 6:
+							case 7:
+								radioevent.summary = "QC";
+								radioevent.start.dateTime = timearr.join('-') + "T13:00:00";
+								radioevent.end.dateTime = timearr.join('-') + "T19:00:00";
+								break;
+							case 8:
+								radioevent.summary = "QC_L";
+								radioevent.start.dateTime = timearr.join('-') + "T19:00:00";
 
-							timearr[2] = formatDay(day+1);
-							console.log(timearr);
-							timearr = checkDate(timearr);
-							console.log(timearr);
-							radioevent.end.dateTime = timearr.join('-') + "T07:00:00";
-							break;
+								timearr[2] = formatDay(day+1);
+								console.log(timearr);
+								timearr = checkDate(timearr);
+								console.log(timearr);
+								radioevent.end.dateTime = timearr.join('-') + "T07:00:00";
+								break;
 
-						case 9:
-							radioevent.summary = "QC_G";
-							radioevent.start.dateTime = timearr.join('-') + "T19:00:00";
+							case 9:
+								radioevent.summary = "QC_G";
+								radioevent.start.dateTime = timearr.join('-') + "T19:00:00";
 
-							timearr[2] = formatDay(day+1);
-							console.log(timearr);
-							timearr = checkDate(timearr);
-							console.log(timearr);
-							radioevent.end.dateTime = timearr.join('-') + "T07:00:00";
-							break;
-					}//End of switch
-					console.log(radioevent);
+								timearr[2] = formatDay(day+1);
+								console.log(timearr);
+								timearr = checkDate(timearr);
+								console.log(timearr);
+								radioevent.end.dateTime = timearr.join('-') + "T07:00:00";
+								break;
+						}//End of switch
+						console.log(radioevent);
 
-					eventarr.push(radioevent);
-				}// End of for loop
-				insertEvent(eventarr);
+						eventarr.push(radioevent);
+					}// End of for loop
+					insertEvent(eventarr);
+				}// End of if (memberData[selectMember] === "undefined")
 			}// End ** function insertEvent
 
 			function cancelUpload(){
