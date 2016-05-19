@@ -118,12 +118,12 @@
 				if (!val){
 					$("#signoutBtn").css({"visibility": "hidden"});
 					$("#name").css({"visibility": "hidden"});
-					$("#normalBtn").attr("src","/assets/google_signin_light_normal.png");
+					$("#normalBtn").attr("src","assets/google_signin_light_normal.png");
 				}
 				else{
 					$("#signoutBtn").css({"visibility": "visible"});
 					$("#name").css({"visibility": "visible"});
-					$("#normalBtn").attr("src","/assets/google_signin_dark_normal.png");
+					$("#normalBtn").attr("src","assets/google_signin_dark_normal.png");
 				}
 			}
 
@@ -174,8 +174,6 @@
 			        {'scope': 'email https://www.googleapis.com/auth/calendar',
 			    	 'prompt': 'select_account consent',
 			    	});
-
-					//console.log(options);
 
 					googleUser = auth2.currentUser.get();
 					googleUser.grant(options).then(
@@ -594,7 +592,7 @@
 			</div>
 
 			<div id = "button-zone">
-				<img src="/assets/google_signin_light_normal.png" id="normalBtn">
+				<img src="assets/google_signin_light_normal.png" id="normalBtn">
 
 				<!--
 				<div id="signinBtn">
