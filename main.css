@@ -32,6 +32,13 @@
 }
 
 #name{
+	color: #453f3f;
+	font-size: 20px;
+	padding-top: 12px;
+	padding-bottom: 8px;
+	padding-right: 30px;
+	text-align: right;
+	/*
 	position: absolute;
 	right: 25px;
 	display: block;
@@ -40,19 +47,24 @@
 	margin-bottom: 5px;
 	color: #453f3f;
 	font-size: 20px;
+	*/
 }
 
 #button-zone{
+	padding-left: 36%;
+	padding-right: 0px;
+	min-width: 300px;
+	/*
 	max-width: 400px;
 	height: 50px;
 	margin: 3px;
 	display: block;
-	/*background-color: #FFF;*/
 
 	position: absolute;
 	top: 45px;
 	right: 10px;
 	bottom: 10px;
+	*/
 }
 img#normalBtn{
 	display: inline-block;
@@ -60,8 +72,8 @@ img#normalBtn{
 	height:46px;
 }
 
+/*
 #signinBtn {
-
 	display: inline-block;
 	background: white;
 	color: #444;
@@ -70,20 +82,6 @@ img#normalBtn{
 	border: thin solid #888;
 	box-shadow: 1px 1px 1px grey;
 	white-space: nowrap;
-  /*
-  display: inline-block;
-  background: white;
-  color: #444;
-  width: 170px;
-  height: 40px;
-  border-radius: 2px;
-  border: 1px solid #999;
-  box-shadow: 1px 1px 1px grey;
-  white-space: nowrap;
-
-  position: relative;
-  line-height: 40px;
-  */
 }
 
 .icon{
@@ -92,17 +90,8 @@ img#normalBtn{
 	vertical-align: middle;
 	width: 42px;
 	height: 42px;
-	/*
-	background: url('google-icon.svg') transparent 5px 50% no-repeat;
-	display: inline-block;
-	vertical-align: middle;
-	width: 36px;
-	height: 36px;
-	margin-top:1px;
-	position:absolute;
-	left:-8px;
-	*/
 }
+
 #signinText{
 	display: inline-block;
 	vertical-align: middle;
@@ -110,13 +99,13 @@ img#normalBtn{
 	padding-right: 42px;
 	font-size: 14px;
 	font-weight: bold;
-	/* Use the Roboto font that is loaded in the <head> */
-	font-family: 'Roboto', sans-serif;
-	/*
-	position:absolute;
-	right: 10px;*/
-}
 
+	// Use the Roboto font that is loaded in the <head>
+	font-family: 'Roboto', sans-serif;
+
+	position:absolute;
+	right: 10px;
+}*/
 #signoutBtn{
 	visibility: hidden;
 	margin-left: 5px;
@@ -131,9 +120,10 @@ img#normalBtn{
 	white-space: nowrap;
 
 
+
 	position:relative;
 	top: 1px;
-	right: 0px;
+	right: -1em;
 	text-align: center;
 	line-height: 40px;
 	font-family: 'Roboto', sans-serif;
@@ -142,24 +132,24 @@ img#normalBtn{
 
 #select-zone{
 	width: 40%;
-	display:inline-block;
-
 	padding-left: 12%;
+	display:inline-block;
 }
 
 #drop-zone{
 	margin: 50px 10px 50px 40px;
+	width: 38%;
+	height: 45%;
+	padding: 25px;
+	border: 2px dashed #BBB;
+	border-radius: 10px;
+	position: absolute;
+	display:inline-block;
+
 	font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif;
 	font-size: 26px;
 	color: #BBB;
-	padding: 25px;
-	width: 38%;
-	height: 45%;
-	border: 2px dashed #BBB;
-	border-radius: 10px;
 	text-align: center;
-	position: absolute;
-	display:inline-block;
 }
 
 .selector-container{
@@ -187,7 +177,7 @@ img#normalBtn{
 #insert-control #insert{
 	margin-right: 10px;
 }
-#inser-control button{
+#insert-control button{
 	margin-right: 50px;
 }
 
