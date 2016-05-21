@@ -544,6 +544,27 @@
 				$("#select-month").css({"visibility": "visible"}) ;
 				$("#select-member").css({"visibility": "visible"});
 				$("#insert").css({"visibility": "visible"});
+
+				/*
+				$("#select-month option").each(function(){
+						if($(this).is(":selected")){
+							console.log("~~~month selected!");
+						}
+				});
+
+				$("#select-member option").each(function(){
+						if($(this).is(":selected")){
+							console.log("~~~member selected!");
+						}
+				});
+				*/
+				if ($("#select-month option").is(":selected") ){
+					console.log("month selected!");
+				}
+
+				if ($("#select-member option").is(":selected") ){
+					console.log("member selected!");
+				}
 			}
 
 			function updateProgressBar(barObj,progress){
@@ -575,7 +596,7 @@
 
 		<div id="instruction">
 			<div class="ins-block" id="ins-text">
-				Instruction Text
+				Welcome!
 			</div>
 
 			<div class="ins-block" id="ins-bar">
@@ -616,7 +637,7 @@
 			<div class="select-block" id="select-month" style="visibility:hidden">
 				<label for="month">Select a month :</label>
 				<div class="selector-container">
-					<select class="form-control" id="month">
+					<select class="form-control" id="month" required>
 						<option value="01">Jan</option>
 						<option value="02">Feb</option>
 						<option value="03">Mar</option>

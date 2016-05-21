@@ -17,6 +17,13 @@
 	margin-left: 20px;
 	margin-right: 0px;
 }
+
+#ins-text{
+	font-size: 18px;
+	font-family: Verdana,Helvetica
+	font-weight: bold;
+}
+
 #ins-bar{
 	padding-top: 18px;
 }
