@@ -76,10 +76,11 @@ img#normalBtn{
 	white-space: nowrap;
 
 
-
+/*
 	position:relative;
 	top: 1px;
 	right: -1em;
+*/
 	text-align: center;
 	line-height: 40px;
 	font-family: 'Roboto', sans-serif;
