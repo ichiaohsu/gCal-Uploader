@@ -359,7 +359,6 @@
 						insertResult = insertRequest(eventlist[i],1000,3,i,eventlist.length);
 						resultarr[i] = insertResult;
 						i++;
-
 					}
 					else{
 						clearInterval(nInterId);
@@ -435,100 +434,104 @@
 
 			    var files = evt.dataTransfer.files; // FileList object.
 
-			    // files is a FileList of File objects. List some properties.
-			    var output = [];
-			    var i,f;
-			    for (i = 0, f = files[i]; i != files.length; ++i) {
+				// Handle multiple files dropping
+				if(files.length > 1){
+					alert('Invalid files. Please drop only ONE file');
+				}else if(files.length === 1){
+					var output = [];
+					var i,f;
 
-			    	var reader = new FileReader();
-			    	var name = f.name;
-			    	// Show file names for user
-			    	output.push('<strong>', escape(name), '</strong> ', ' - ', f.size, ' bytes');
+					f = files[0];
+					var reader = new FileReader();
+					var name = f.name;
+					// Show file names for user
+					output.push('<strong>', escape(name), '</strong> ', ' - ', f.size, ' bytes');
 
-			    	reader.onload = function(e){
-			    		var data = e.target.result;
-			    		//console.log(data);
-			    		var workbook = XLSX.read(data, {type: 'binary'});
+					reader.onload = function(e){
+						var data = e.target.result;
+						//console.log(data);
+						var workbook = XLSX.read(data, {type: 'binary'});
 
-			    		var firstsheet = workbook.SheetNames[0];
-			    		worksheet = workbook.Sheets[firstsheet];
+						var firstsheet = workbook.SheetNames[0];
+						worksheet = workbook.Sheets[firstsheet];
 
-			    		//console.log(worksheet);
-			    		for (z in worksheet){
-			    			var z_addr = XLSX.utils.decode_cell(z);
-			    			// Set boundary
-			    			if(z[0] === '!') {
-			    				continue;
-			    			}
-			    			else if(z_addr.c == 0){
-			    				console.log('first column');
-			    				// Use column A to set up starting row and ending column
-			    				if(desiredData.previousCell.length != 0 && worksheet[desiredData.previousCell].v == '小夜' && worksheet[z].v == '1'){
+						//console.log(worksheet);
+						for (z in worksheet){
+							var z_addr = XLSX.utils.decode_cell(z);
+							// Set boundary
+							if(z[0] === '!') {
+								continue;
+							}
+							else if(z_addr.c == 0){
+								console.log('first column');
+								// Use column A to set up starting row and ending column
+								if(desiredData.previousCell.length != 0 && worksheet[desiredData.previousCell].v == '小夜' && worksheet[z].v == '1'){
 
-			    					desiredData.range.e.c = XLSX.utils.decode_cell(desiredData.previousCell).c;
-			    					desiredData.range.s.r = z_addr.r;
-			    					desiredData.isStartingSet = true;
-			    				}
+									desiredData.range.e.c = XLSX.utils.decode_cell(desiredData.previousCell).c;
+									desiredData.range.s.r = z_addr.r;
+									desiredData.isStartingSet = true;
+								}
 
-			    				/* For special character
+								/* For special character
 								 * If use if(z_addr.r > 27 && isNaN( parseInt(worksheet[z].v) ) &&!desiredData.isBoundarySet) here
 								 * It wouldn't find if isBoundarySet doesn't exist in the very beginning
 								*/
-			    				if(z_addr.r > 27 && isNaN( parseInt(worksheet[z].v) ) && desiredData.isBoundarySet === false){
-			    					console.log("first layer");
-			    					if(z_addr.r - desiredData.range.s.r < 33){
-			    						console.log("second layer");
-			    						desiredData.range.e.r = XLSX.utils.decode_cell(desiredData.previousCell).r;
-			    						desiredData.isBoundarySet = true;
+								if(z_addr.r > 27 && isNaN( parseInt(worksheet[z].v) ) && desiredData.isBoundarySet === false){
+									console.log("first layer");
+									if(z_addr.r - desiredData.range.s.r < 33){
+										console.log("second layer");
+										desiredData.range.e.r = XLSX.utils.decode_cell(desiredData.previousCell).r;
+										desiredData.isBoundarySet = true;
 
-			    						console.log(desiredData.range);
-			    					}
-			    				}
-			    			}
-			    			else if(worksheet[z].v == "早班"){
-			    				// Set up starting row
-			    				desiredData.range.s.c = z_addr.c;
-			    			}
+										console.log(desiredData.range);
+									}
+								}
+							}
+							else if(worksheet[z].v == "早班"){
+								// Set up starting row
+								desiredData.range.s.c = z_addr.c;
+							}
 
-			    			// Check if address are in bondary, ready to check member
-			    			if (desiredData.isStartingSet){
-			    				// Not yet reach lower boundary
-			    				if (!desiredData.isBoundarySet){
-				    				if (z_addr.c >= desiredData.range.s.c && z_addr.r >= desiredData.range.s.r && z_addr.c <= desiredData.range.e.c){
-				    					// Member not in member array. Not support IE9 or below.
-				    					if (desiredData.member.indexOf(worksheet[z].v) < 0){
-				    						console.log(z + " member not in member-array: " + desiredData.member);
-				    						desiredData.member.push(worksheet[z].v);
+							// Check if address are in bondary, ready to check member
+							if (desiredData.isStartingSet){
+								// Not yet reach lower boundary
+								if (!desiredData.isBoundarySet){
+									if (z_addr.c >= desiredData.range.s.c && z_addr.r >= desiredData.range.s.r && z_addr.c <= desiredData.range.e.c){
+										// Member not in member array. Not support IE9 or below.
+										if (desiredData.member.indexOf(worksheet[z].v) < 0){
+											console.log(z + " member not in member-array: " + desiredData.member);
+											desiredData.member.push(worksheet[z].v);
 											// member didn't show before. New a key/array pair for member cell
 											memberData[worksheet[z].v] = new Array();
-				    					}
+										}
 										memberData[worksheet[z].v].push(z);
 										console.log(memberData);
-				    				}
-			    				}
-			    			}
+									}
+								}
+							}
 
-			    			console.log(z + " = " + JSON.stringify(worksheet[z].v));
-			    			desiredData.previousCell = z;
-			    		};//End of for loop
+							console.log(z + " = " + JSON.stringify(worksheet[z].v));
+							desiredData.previousCell = z;
+						};//End of for loop
 
-			    		// If boundary still not set, use the last cell as lower boundary
-			    		if (!desiredData.isBoundarySet ){
-			    			desiredData.range.e.r = XLSX.utils.decode_cell(desiredData.previousCell).r;
-			    			desiredData.isBoundarySet = true;
+						// If boundary still not set, use the last cell as lower boundary
+						if (!desiredData.isBoundarySet ){
+							desiredData.range.e.r = XLSX.utils.decode_cell(desiredData.previousCell).r;
+							desiredData.isBoundarySet = true;
 
-			    			console.log(desiredData.range);
-			    		}
-			    		showMemberSelect(desiredData.member);
-			    	};// End of onload
+							console.log(desiredData.range);
+						}
+						showMemberSelect(desiredData.member);
+					};// End of onload
 
-			    	// Error handle
-			    	reader.onerror = function(e){
-        				console.log(e);
+					// Error handle
+					reader.onerror = function(e){
+						console.log(e);
 					 };
-			    	reader.readAsBinaryString(f);
-			    }
-				$("#list").html("<ul>" + output.join("") + "</ul>");
+					reader.readAsBinaryString(f);
+
+					$("#list").html("<ul>" + output.join("") + "</ul>");
+				}
 			}
 
 			function showMemberSelect(member){
