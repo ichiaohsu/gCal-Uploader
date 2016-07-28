@@ -3,13 +3,6 @@
 	background-color: #9c9191;
 
 }
-/*
-#instruction{
-	width: 49%;
-	height: 120px;
-	display: inline-block;
-	vertical-align: top;
-}*/
 
 .ins-block{
 	max-width: 90%;
@@ -20,9 +13,12 @@
 }
 
 #ins-text{
-	font-size: 18px;
+	font-size: 28px;
 	font-family: Verdana,Helvetica
 	font-weight: bold;
+
+	padding-left:7%;
+	padding-top: 8px;
 }
 
 #ins-bar{

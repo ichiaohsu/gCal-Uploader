@@ -205,7 +205,6 @@
 				);
 			}
 
-
 			function loadCalendarApi(){
 				console.log("loadCalendarApi");
 				gapi.client.load('calendar', 'v3', getInsertData);
@@ -215,7 +214,7 @@
     			return n > 9 ? "" + n: "0" + n;
 			}
 
-			function checkDate(arr){
+			function verifyDate(arr){
 				var m = parseInt(arr[1]);
 				var d = parseInt(arr[2]);
 				switch(m){
@@ -311,7 +310,7 @@
 
 								timearr[2] = formatDay(day+1);
 								console.log(timearr);
-								timearr = checkDate(timearr);
+								timearr = verifyDate(timearr);
 								console.log(timearr);
 								radioevent.end.dateTime = timearr.join('-') + "T07:00:00";
 								break;
@@ -322,7 +321,7 @@
 
 								timearr[2] = formatDay(day+1);
 								console.log(timearr);
-								timearr = checkDate(timearr);
+								timearr = verifyDate(timearr);
 								console.log(timearr);
 								radioevent.end.dateTime = timearr.join('-') + "T07:00:00";
 								break;
@@ -471,7 +470,7 @@
 			    					desiredData.isStartingSet = true;
 			    				}
 
-			    				/* For special character 連班上限......
+			    				/* For special character
 								 * If use if(z_addr.r > 27 && isNaN( parseInt(worksheet[z].v) ) &&!desiredData.isBoundarySet) here
 								 * It wouldn't find if isBoundarySet doesn't exist in the very beginning
 								*/
@@ -546,19 +545,6 @@
 				$("#select-member").css({"visibility": "visible"});
 				$("#insert").css({"visibility": "visible"});
 
-				/*
-				$("#select-month option").each(function(){
-						if($(this).is(":selected")){
-							console.log("~~~month selected!");
-						}
-				});
-
-				$("#select-member option").each(function(){
-						if($(this).is(":selected")){
-							console.log("~~~member selected!");
-						}
-				});
-				*/
 				if ($("#select-month option").is(":selected") ){
 					console.log("month selected!");
 				}
@@ -620,41 +606,7 @@
 				<img src="assets/google_signin_light_normal.png" id="normalBtn">
 			</div>
 		</div>
-		<!--
-		<div id="instruction">
-			<div class="ins-block" id="ins-text">
-				Welcome!
-			</div>
 
-			<div class="ins-block" id="ins-bar">
-				<div class="progress" id="act-progress">
-					<div class="progress-bar progress-bar-info" id="act-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="min-width: 2em">
-			    		0%
-					</div>
-				</div>
-			</div>
-		</div>
-
-		<div id="login">
-			<div id="name" class="ins-block">
-			</div>
-
-			<div id = "button-zone" class="ins-block">
-
-
-				<div id="signinBtn">
-					<span class="icon"></span>
-					<span id="signinText">Sign in with Google</span>
-				</div>
-
-				<div id="signoutBtn" onclick="signOut()">
-					<span id="signoutText">Sign out</span>
-				</div>
-				<img src="assets/google_signin_light_normal.png" id="normalBtn">
-			</div>
-
-		</div>
-	-->
 	</div>
 
 	<div class="fluid-container" id="main">
