@@ -1,15 +1,15 @@
 #header{
 	height: 20%;
 	background-color: #9c9191;
-
 }
+/*
 #instruction{
 	width: 49%;
 	height: 120px;
 	display: inline-block;
-	vertical-align: top;
+	vertical-align: middle;
 }
-
+*/
 .ins-block{
 	max-width: 90%;
 	height: 50%;
@@ -20,14 +20,16 @@
 
 #ins-text{
 	font-size: 18px;
-	font-family: Verdana,Helvetica
+	font-family: Verdana,Helvetica;
 	font-weight: bold;
+	padding-left:30px;
 }
 
 #ins-bar{
 	padding-top: 18px;
 }
 
+/*
 #login{
 	width: 49%;
 	height:120px;
@@ -37,13 +39,14 @@
 	position: relative;
 	left:1.5%;
 }
+*/
 
 #name{
 	color: #453f3f;
 	font-size: 20px;
 	padding-top: 12px;
 	padding-bottom: 8px;
-	padding-right: 30px;
+	padding-right: 8%;
 	text-align: right;
 }
 
@@ -53,6 +56,7 @@
     display: flex;
 
 	padding-right: 8%;
+	right: 10px;
 	/*min-width: 300px;*/
 }
 
@@ -76,11 +80,10 @@ img#normalBtn{
 	white-space: nowrap;
 
 
-/*
+
 	position:relative;
 	top: 1px;
 	right: -1em;
-*/
 	text-align: center;
 	line-height: 40px;
 	font-family: 'Roboto', sans-serif;

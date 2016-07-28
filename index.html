@@ -10,6 +10,7 @@
 		<!-- Latest compiled and minified JavaScript -->
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
 		<link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet" type="text/css">
+
 		<!-- SheetJS for parsing xls file -->
 		<script lang="javascript" src="js/xlsx.core.min.js"></script>
 		<script>
@@ -595,11 +596,11 @@
 	<div class="fluid-container" id="header">
 
 		<div class="row">
-			<div class="col-xs-6 col-md-6">
+			<div class="col-xs-6 col-md-6" id="ins-text">
 				Welcome!
 			</div>
 
-			<div id="name" class="col-xs-6 col-md-6">
+			<div class="col-xs-6 col-md-6" id="name">
 			</div>
 
 			<div class="col-xs-6 col-md-6">
@@ -612,11 +613,11 @@
 				</div>
 			</div>
 
-			<div class="col-xs-6 col-md-6">
-				<img src="assets/google_signin_light_normal.png" id="normalBtn">
+			<div class="col-xs-6 col-md-6" id = "button-zone">
 				<div id="signoutBtn" onclick="signOut()">
 					<span id="signoutText">Sign out</span>
 				</div>
+				<img src="assets/google_signin_light_normal.png" id="normalBtn">
 			</div>
 		</div>
 		<!--
