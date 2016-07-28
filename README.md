@@ -33,7 +33,7 @@ http://caniuse.com/#feat=fileapi
 
 To use this page is quite simple. You can follow the steps as below:
 
-1. Select a excel file written in special format in your explorer
+1. Select an excel file written in special format in your explorer
 2. Drag it to the drop zone and drop it.
 3. A month selector and a member selector would show up. Select the month and member you want to upload
 4. Press Insert button
